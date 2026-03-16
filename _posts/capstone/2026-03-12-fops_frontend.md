@@ -2,408 +2,421 @@
 toc: false
 layout: post
 title: Friends of Poway Seniors
-description: Home Navigation
+description: Home — Friends of Poway Seniors
 permalink: /fops/
 sticky_rank: 1
 ---
 
+<style>
+.post-title, .page-title, h1.title,
+.post-meta, .post-date, .reading-time,
+.breadcrumbs, nav.breadcrumb,
+.post-header, header.post-header,
+article > h1:first-child,
+.wrapper > h1, main > h1 { display: none !important; }
+body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !important; }
+.post-content, .content, main, article, .wrapper, #main-content {
+  padding: 0 !important; margin: 0 !important;
+  max-width: 100% !important; background: #2e5238 !important;
+}
+</style>
+
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Friends of Poway Seniors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
     --sage:    #4a7c59;
     --sage-lt: #7aad8b;
     --sage-dk: #2e5238;
-    --cream:   #faf7f2;
-    --warm:    #f0ebe0;
     --gold:    #c9913d;
     --gold-lt: #e8c37a;
-    --text:    #1e2a1e;
-    --muted:   #6b7c6b;
+    --warm:    #f0ebe0;
     --white:   #ffffff;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
 
-  html, body {
-    height: 100%;
-    overflow: hidden;
+  #fops-root {
     font-family: 'DM Sans', sans-serif;
     background: var(--sage-dk);
-    color: var(--text);
+    min-height: 100vh;
+    color: var(--white);
   }
-
   h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 
-  /* ── PAGE WRAPPER ── */
-  .page {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  /* ── ALERT BANNER ── */
-  .alert-banner {
-    background: var(--gold);
-    color: var(--white);
-    padding: 0.65rem 2rem;
-    text-align: center;
-    font-size: 0.85rem;
-    font-weight: 500;
-    flex-shrink: 0;
-  }
-  .alert-banner a { color: var(--white); font-weight: 700; text-underline-offset: 3px; }
-
-  /* ── HEADER ── */
-  .site-header {
-    background: rgba(250,247,242,0.07);
-    backdrop-filter: blur(12px);
+  /* ── NAV ── */
+  .fops-nav {
+    background: rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(255,255,255,0.1);
-    padding: 0 2.5rem;
-    flex-shrink: 0;
+    position: sticky; top: 0; z-index: 500;
+    backdrop-filter: blur(10px);
   }
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  .fops-nav-inner {
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
     height: 68px;
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   }
-  .nav-logo {
-    display: flex; align-items: center; gap: 12px;
-    text-decoration: none;
+  .fops-logo {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; flex-shrink: 0;
   }
-  .nav-logo-icon {
-    width: 42px; height: 42px;
-    background: var(--sage);
-    border-radius: 50%;
+  .fops-logo-icon {
+    width: 38px; height: 38px; background: var(--sage); border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    font-size: 20px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+    font-size: 17px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   }
-  .nav-logo span {
+  .fops-logo span {
     font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
+    font-size: 1.02rem; font-weight: 700; color: var(--white);
+  }
+
+  .fops-menu { display: flex; align-items: center; gap: 0.1rem; }
+
+  .fops-nav-link {
+    display: inline-flex; align-items: center; gap: 5px;
+    text-decoration: none; color: rgba(255,255,255,0.82);
+    font-size: 0.9rem; font-weight: 500;
+    padding: 0.45rem 0.9rem; border-radius: 8px;
+    border: none; background: none; cursor: pointer;
+    font-family: 'DM Sans', sans-serif; white-space: nowrap;
+    transition: background 0.17s, color 0.17s;
+  }
+  .fops-nav-link:hover { background: rgba(255,255,255,0.12); color: var(--white); }
+
+  .fops-donate {
+    background: var(--gold) !important; color: var(--white) !important;
+    border-radius: 22px !important; font-weight: 600 !important;
+    padding: 0.45rem 1.1rem !important; margin-left: 0.4rem;
+    box-shadow: 0 2px 12px rgba(201,145,61,0.45);
+  }
+  .fops-donate:hover { background: #b07e2e !important; }
+
+  /* ── DROPDOWN ── */
+  .fops-dropdown { position: relative; }
+  .fops-chevron {
+    font-size: 0.55rem; opacity: 0.65;
+    display: inline-block; transition: transform 0.2s;
+  }
+  .fops-dropdown.open .fops-chevron { transform: rotate(180deg); }
+
+  .fops-dropdown-panel {
+    position: absolute; top: calc(100% + 8px); left: 50%;
+    transform: translateX(-50%) translateY(-6px);
+    background: var(--white); border-radius: 14px;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.22);
+    min-width: 220px; padding: 0.5rem;
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.22s cubic-bezier(0.34,1.4,0.64,1), visibility 0.2s;
+  }
+  .fops-dropdown-panel::before {
+    content: ''; position: absolute; top: -5px; left: 50%;
+    transform: translateX(-50%) rotate(45deg);
+    width: 10px; height: 10px; background: var(--white); border-radius: 2px;
+  }
+  .fops-dropdown.open .fops-dropdown-panel {
+    opacity: 1; visibility: visible; pointer-events: all;
+    transform: translateX(-50%) translateY(0);
+  }
+  .fops-dp-item {
+    display: flex; align-items: center; gap: 10px;
+    text-decoration: none; color: #1e2a1e;
+    font-size: 0.88rem; font-weight: 500;
+    padding: 0.65rem 0.85rem; border-radius: 9px; transition: background 0.14s;
+  }
+  .fops-dp-item:hover { background: #f0ebe0; color: #2e5238; }
+  .fops-dp-icon {
+    width: 28px; height: 28px; background: #f0ebe0; border-radius: 7px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.88rem; flex-shrink: 0;
+  }
+
+  /* ── HERO ── */
+  .fops-hero {
+    padding: 5rem 2rem 5rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .fops-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(55deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px),
+      repeating-linear-gradient(-55deg, rgba(255,255,255,0.02) 0, rgba(255,255,255,0.02) 1px, transparent 1px, transparent 60px);
+    pointer-events: none;
+  }
+  .fops-hero::after {
+    content: ''; position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 800px; height: 600px;
+    background: radial-gradient(ellipse, rgba(201,145,61,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .fops-hero-inner {
+    position: relative; z-index: 2;
+    max-width: 1000px; margin: 0 auto;
+  }
+
+  .fops-hero-top-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.8rem, 7vw, 6rem);
     font-weight: 700;
     color: var(--white);
-    letter-spacing: 0.01em;
+    line-height: 1.1;
+    text-align: center;
+    margin-bottom: 1.25rem;
   }
-  .donate-btn {
-    display: inline-flex; align-items: center; gap: 7px;
-    background: var(--gold);
-    color: var(--white);
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.88rem;
-    padding: 0.5rem 1.25rem;
-    border-radius: 24px;
-    transition: all 0.2s;
-    box-shadow: 0 2px 12px rgba(201,145,61,0.4);
-  }
-  .donate-btn:hover { background: #b07e2e; transform: translateY(-1px); }
 
-  /* ── MAIN CONTENT ── */
-  .main-content {
-    flex: 1;
+  .fops-badge {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: var(--gold-lt); font-size: 0.72rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.33rem 1rem; border-radius: 20px; margin-bottom: 2rem;
+  }
+
+  /* Big title + image row */
+  .fops-title-row {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 2rem 2rem 1.5rem;
-    position: relative;
-    overflow: hidden;
+    gap: 2.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
   }
-
-  /* Background geometric pattern */
-  .main-content::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image:
-      repeating-linear-gradient(45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 50px),
-      repeating-linear-gradient(-45deg, rgba(255,255,255,0.03) 0px, rgba(255,255,255,0.03) 1px, transparent 1px, transparent 50px);
-    pointer-events: none;
-  }
-  .main-content::after {
-    content: '';
-    position: absolute;
-    top: -30%; left: 50%;
-    transform: translateX(-50%);
-    width: 700px; height: 500px;
-    background: radial-gradient(ellipse, rgba(201,145,61,0.12) 0%, transparent 65%);
-    pointer-events: none;
-  }
-
-  /* ── INTRO TEXT ── */
-  .intro {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    position: relative; z-index: 2;
-  }
-  .intro-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: rgba(255,255,255,0.1);
-    color: var(--gold-lt);
-    border: 1px solid rgba(255,255,255,0.2);
-    font-size: 0.75rem; font-weight: 600;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 0.35rem 1rem; border-radius: 20px;
-    margin-bottom: 1rem;
-  }
-  .intro h1 {
-    font-size: clamp(1.9rem, 3.5vw, 2.8rem);
-    color: var(--white);
-    margin-bottom: 0.6rem;
-  }
-  .intro h1 em { color: var(--gold-lt); font-style: italic; }
-  .intro p {
-    font-size: 0.97rem;
-    color: rgba(255,255,255,0.65);
-    max-width: 440px;
-    margin: 0 auto;
-    font-weight: 300;
-    line-height: 1.6;
-  }
-
-  /* ── NAV BUTTONS GRID ── */
-  .nav-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.25rem;
-    width: 100%;
-    max-width: 780px;
-    position: relative; z-index: 2;
-  }
-
-  .nav-btn {
-    display: flex;
-    align-items: center;
-    gap: 1.25rem;
-    background: rgba(255,255,255,0.07);
-    border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 18px;
-    padding: 1.6rem 1.75rem;
-    text-decoration: none;
-    color: var(--white);
-    transition: all 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-  }
-
-  /* Hover shimmer */
-  .nav-btn::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.25s;
-    border-radius: inherit;
-  }
-  .nav-btn:hover::before { opacity: 1; }
-
-  /* Bottom accent line */
-  .nav-btn::after {
-    content: '';
-    position: absolute; bottom: 0; left: 0; right: 0; height: 3px;
-    border-radius: 0 0 18px 18px;
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.3s ease;
-  }
-  .nav-btn:hover::after { transform: scaleX(1); }
-  .nav-btn:hover {
-    background: rgba(255,255,255,0.13);
-    border-color: rgba(255,255,255,0.25);
-    transform: translateY(-3px);
-    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
-  }
-
-  /* Per-button accent colors */
-  .nav-btn.mission::after  { background: linear-gradient(90deg, var(--gold), var(--gold-lt)); }
-  .nav-btn.events::after   { background: linear-gradient(90deg, var(--sage-lt), #a8d5b5); }
-  .nav-btn.about::after    { background: linear-gradient(90deg, #7eb8d4, #a8d5ea); }
-  .nav-btn.resources::after { background: linear-gradient(90deg, #c97e7e, #e8a8a8); }
-
-  .btn-icon {
-    width: 58px; height: 58px;
-    border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 1.7rem;
-    flex-shrink: 0;
-    transition: transform 0.25s;
-  }
-  .nav-btn:hover .btn-icon { transform: scale(1.1); }
-
-  .mission  .btn-icon { background: rgba(201,145,61,0.25);  }
-  .events   .btn-icon { background: rgba(122,173,139,0.25); }
-  .about    .btn-icon { background: rgba(126,184,212,0.25); }
-  .resources .btn-icon { background: rgba(201,126,126,0.25); }
-
-  .btn-text { flex: 1; }
-  .btn-label {
+  .fops-big-title {
     font-family: 'Playfair Display', serif;
-    font-size: 1.3rem;
+    font-size: clamp(3.2rem, 8vw, 7rem);
     font-weight: 700;
     color: var(--white);
-    margin-bottom: 0.25rem;
-    line-height: 1.2;
+    line-height: 1.05;
+    text-align: left;
   }
-  .btn-desc {
-    font-size: 0.82rem;
-    color: rgba(255,255,255,0.55);
-    font-weight: 400;
-    line-height: 1.4;
+  .fops-big-title em {
+    color: var(--gold-lt);
+    font-style: italic;
+    display: block;
   }
-  .btn-arrow {
-    font-size: 1.1rem;
-    color: rgba(255,255,255,0.35);
-    transition: all 0.25s;
+  .fops-hero-img {
+    width: clamp(140px, 18vw, 220px);
+    height: clamp(140px, 18vw, 220px);
+    object-fit: contain;
+    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
     flex-shrink: 0;
-  }
-  .nav-btn:hover .btn-arrow {
-    color: rgba(255,255,255,0.8);
-    transform: translateX(4px);
   }
 
-  /* ── FOOTER BAR ── */
-  .footer-bar {
-    flex-shrink: 0;
-    padding: 0.75rem 2.5rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-top: 1px solid rgba(255,255,255,0.08);
-    background: rgba(0,0,0,0.15);
+  .fops-hero-sub {
+    font-size: 1.08rem; color: rgba(255,255,255,0.7);
+    font-weight: 300; line-height: 1.78;
+    max-width: 680px; margin: 0 auto;
   }
-  .footer-bar span {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.35);
+
+  /* ── DIVIDER ── */
+  .fops-divider {
+    max-width: 1100px; margin: 0 auto;
+    border: none; border-top: 1px solid rgba(255,255,255,0.1);
   }
-  .footer-bar a {
-    font-size: 0.75rem;
-    color: rgba(255,255,255,0.5);
-    text-decoration: none;
-    transition: color 0.2s;
+
+  /* ── MISSION & VISION ── */
+  .fops-mv { padding: 5rem 2rem 7rem; }
+  .fops-mv-inner { max-width: 1100px; margin: 0 auto; }
+  .fops-mv-header { text-align: center; margin-bottom: 3rem; }
+  .fops-eyebrow {
+    font-size: 0.72rem; font-weight: 700; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--gold-lt); margin-bottom: 0.6rem;
   }
-  .footer-bar a:hover { color: var(--gold-lt); }
+  .fops-mv-header h2 {
+    font-size: clamp(1.9rem, 3.5vw, 2.8rem); color: var(--white); margin-bottom: 0.75rem;
+  }
+  .fops-mv-header p {
+    font-size: 0.97rem; color: rgba(255,255,255,0.6);
+    max-width: 500px; margin: 0 auto; font-weight: 300; line-height: 1.7;
+  }
+  .fops-mv-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  .fops-mv-card {
+    border-radius: 20px; padding: 2.5rem;
+    position: relative; overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .fops-mv-card.mission { background: rgba(255,255,255,0.07); backdrop-filter: blur(8px); }
+  .fops-mv-card.vision  { background: rgba(201,145,61,0.15); border-color: rgba(201,145,61,0.25); }
+  .fops-mv-card::after {
+    content: ''; position: absolute; top: -40px; right: -40px;
+    width: 160px; height: 160px; border-radius: 50%;
+    background: rgba(255,255,255,0.04); pointer-events: none;
+  }
+  .fops-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    color: rgba(255,255,255,0.85); font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 0.28rem 0.85rem; border-radius: 20px; margin-bottom: 1.1rem;
+  }
+  .fops-mv-card.vision .fops-pill {
+    background: rgba(201,145,61,0.25); border-color: rgba(201,145,61,0.4); color: var(--gold-lt);
+  }
+  .fops-mv-card h3 { font-size: 1.6rem; color: var(--white); margin-bottom: 1rem; }
+  .fops-mv-card p  { font-size: 0.97rem; color: rgba(255,255,255,0.78); line-height: 1.8; }
+
+  /* ── FOOTER ── */
+  .fops-footer {
+    background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 1.5rem 2rem;
+  }
+  .fops-footer-inner {
+    max-width: 1100px; margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 0.75rem;
+  }
+  .fops-footer-inner span { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+  .fops-footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .fops-footer-links a {
+    font-size: 0.8rem; color: rgba(255,255,255,0.5);
+    text-decoration: none; transition: color 0.18s;
+  }
+  .fops-footer-links a:hover { color: var(--white); }
 
   /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(20px); }
+  @keyframes fopsUp {
+    from { opacity: 0; transform: translateY(18px); }
     to   { opacity: 1; transform: translateY(0); }
   }
-  .intro       { animation: fadeUp 0.6s ease both; }
-  .nav-btn     { animation: fadeUp 0.6s ease both; }
-  .nav-btn:nth-child(1) { animation-delay: 0.1s; }
-  .nav-btn:nth-child(2) { animation-delay: 0.18s; }
-  .nav-btn:nth-child(3) { animation-delay: 0.26s; }
-  .nav-btn:nth-child(4) { animation-delay: 0.34s; }
+  .fu  { animation: fopsUp 0.6s ease both; }
+  .fu1 { animation-delay: 0.05s; }
+  .fu2 { animation-delay: 0.15s; }
+  .fu3 { animation-delay: 0.25s; }
+  .fu4 { animation-delay: 0.35s; }
 
   /* ── RESPONSIVE ── */
-  @media (max-width: 640px) {
-    .nav-grid { grid-template-columns: 1fr; max-width: 420px; gap: 1rem; }
-    .intro { margin-bottom: 1.75rem; }
-    .intro h1 { font-size: 1.7rem; }
-    .nav-btn { padding: 1.25rem 1.25rem; }
-    .btn-icon { width: 48px; height: 48px; font-size: 1.4rem; }
-    .btn-label { font-size: 1.15rem; }
-    .site-header { padding: 0 1.25rem; }
-    .footer-bar { padding: 0.65rem 1.25rem; }
-    .alert-banner { font-size: 0.78rem; padding: 0.5rem 1rem; }
-    .donate-btn span { display: none; }
+  @media (max-width: 700px) {
+    .fops-hero-top-title { font-size: clamp(2rem, 9vw, 3.5rem); }
+    .fops-title-row { flex-direction: column; gap: 1.5rem; }
+    .fops-big-title { text-align: center; font-size: clamp(2.8rem, 10vw, 4.5rem); }
+    .fops-big-title em { display: inline; }
+    .fops-mv-cards { grid-template-columns: 1fr; }
+    .fops-logo span { display: none; }
+    .fops-nav-link { padding: 0.4rem 0.65rem; font-size: 0.83rem; }
+    .fops-hero { padding: 4rem 1.25rem 3.5rem; }
+    .fops-mv { padding: 3.5rem 1.25rem 5rem; }
   }
 </style>
 </head>
 <body>
+<div id="fops-root">
 
-<div class="page">
-
-  <!-- ALERT BANNER -->
-  <div class="alert-banner">
-    🍽️ <strong>New Congregate Senior Lunch Program</strong> — Chef Charlie's Classic Cooking. Reservations required by 1 PM the day before.
-    <a href="https://poway.org/1073/Meal-Program" target="_blank">Learn more →</a>
-  </div>
-
-  <!-- HEADER -->
-  <header class="site-header">
-    <div class="header-inner">
-      <a href="/fops/" class="nav-logo">
-        <div class="nav-logo-icon">🌲</div>
+  <!-- NAV -->
+  <nav class="fops-nav">
+    <div class="fops-nav-inner">
+      <a href="/fops/" class="fops-logo">
+        <div class="fops-logo-icon">🌲</div>
         <span>Friends of Poway Seniors</span>
       </a>
-      <a href="https://nam04.safelinks.protection.outlook.com/?url=https%3A%2F%2Fgateway.clearent.net%2Fpaylink%2F000001634294%2F16126366" target="_blank" class="donate-btn">
-        ♥ <span>Donate</span>
-      </a>
+      <div class="fops-menu">
+        <div class="fops-dropdown" id="eventsDropdown">
+          <button class="fops-nav-link" onclick="toggleDropdown(event)">
+            Events <span class="fops-chevron">▼</span>
+          </button>
+          <div class="fops-dropdown-panel">
+            <a href="/fopsshop/" class="fops-dp-item">
+              <div class="fops-dp-icon">🛍️</div> ReRuns Shoppe
+            </a>
+            <a href="/fopsbingo/" class="fops-dp-item">
+              <div class="fops-dp-icon">🎱</div> BINGO
+            </a>
+            <a href="/fopslunchmd/" class="fops-dp-item">
+              <div class="fops-dp-icon">🍽️</div> Social Lunch
+            </a>
+            <a href="/fopsbday/" class="fops-dp-item">
+              <div class="fops-dp-icon">🎂</div> Birthday Certificate
+            </a>
+          </div>
+        </div>
+        <a href="/fopsaboutus/"   class="fops-nav-link">About Us</a>
+        <a href="/fopsresources/" class="fops-nav-link">Resources</a>
+        <a href="https://gateway.clearent.net/paylink/000001634294/16126366"
+           target="_blank" class="fops-nav-link fops-donate">♥ Donate</a>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
+  <!-- HERO -->
+  <section class="fops-hero">
+    <div class="fops-hero-inner">
+      <h1 class="fops-hero-top-title fu fu1">Friends of Poway Seniors</h1>
+      <div class="fops-badge fu fu2">🌿 Serving Poway Since 1974</div>
 
-    <div class="intro">
-      <div class="intro-badge">🌿 Serving Poway Since 1974</div>
-      <h1>Enriching Lives,<br><em>One Senior at a Time</em></h1>
-      <p>Supporting seniors and marginalized communities through volunteer opportunities, material provisions, and community outreach.</p>
+      <!-- Big title + image side by side -->
+      <div class="fops-title-row fu fu3">
+        <h1 class="fops-big-title">
+          Friends of<br><em>Poway Seniors</em>
+        </h1>
+        <img
+          src="/images/capstone/fops.png"
+          alt="Friends of Poway Seniors logo"
+          class="fops-hero-img"
+        />
+      </div>
+
+      <p class="fops-hero-sub fu fu4">
+        The Poway Valley Senior Citizens Corporation was formed in 1974 and it is still here today. We are no longer the Poway Senior Center — our mission and vision have changed, but our passion to positively impact lives has not wavered. Please join us on our new journey.
+      </p>
     </div>
+  </section>
 
-    <div class="nav-grid">
+  <hr class="fops-divider"/>
 
-      <!-- MISSION & VISION -->
-      <a href="/fopsmissionandvision/" class="nav-btn mission">
-        <div class="btn-icon">🌿</div>
-        <div class="btn-text">
-          <div class="btn-label">Mission & Vision</div>
-          <div class="btn-desc">Our purpose, values, and the future we're building together</div>
+  <!-- MISSION & VISION -->
+  <section class="fops-mv">
+    <div class="fops-mv-inner">
+      <div class="fops-mv-header">
+        <div class="fops-eyebrow">Our Purpose</div>
+        <h2>Mission &amp; Vision</h2>
+        <p>Everything we do flows from two core commitments — who we serve and the future we are working toward.</p>
+      </div>
+      <div class="fops-mv-cards">
+        <div class="fops-mv-card mission">
+          <div class="fops-pill">🌿 Mission</div>
+          <h3>What We Do</h3>
+          <p>To support our seniors and marginalized communities by providing volunteer opportunities, access to material provisions and monetary support for municipal-run senior programming and other community outreach programs.</p>
         </div>
-        <div class="btn-arrow">→</div>
-      </a>
-
-      <!-- EVENTS -->
-      <a href="/fopsevents/" class="nav-btn events">
-        <div class="btn-icon">📅</div>
-        <div class="btn-text">
-          <div class="btn-label">Events</div>
-          <div class="btn-desc">BINGO nights, senior lunches, and upcoming community programs</div>
+        <div class="fops-mv-card vision">
+          <div class="fops-pill">✨ Vision</div>
+          <h3>What We Seek</h3>
+          <p>For our seniors, and community-at-large to engage in, benefit from, and enjoy life to its fullest.</p>
         </div>
-        <div class="btn-arrow">→</div>
-      </a>
-
-      <!-- ABOUT US -->
-      <a href="/fopsaboutus/" class="nav-btn about">
-        <div class="btn-icon">🤝</div>
-        <div class="btn-text">
-          <div class="btn-label">About Us</div>
-          <div class="btn-desc">Our history, team, partners, and community impact since 1974</div>
-        </div>
-        <div class="btn-arrow">→</div>
-      </a>
-
-      <!-- RESOURCES -->
-      <a href="/fopsresources/" class="nav-btn resources">
-        <div class="btn-icon">📚</div>
-        <div class="btn-text">
-          <div class="btn-label">Resources</div>
-          <div class="btn-desc">Programs, services, and support available for seniors</div>
-        </div>
-        <div class="btn-arrow">→</div>
-      </a>
-
+      </div>
     </div>
-  </main>
+  </section>
 
-  <!-- FOOTER BAR -->
-  <div class="footer-bar">
-    <span>© 2025 PVSCC 501(c)(3) · EIN: 51-0183384</span>
-    <a href="https://www.facebook.com/PowaySeniorCenter" target="_blank">📘 Facebook</a>
-  </div>
+  <!-- FOOTER -->
+  <footer class="fops-footer">
+    <div class="fops-footer-inner">
+      <span>© 2025 PVSCC 501(c)(3) · EIN: 51-0183384</span>
+      <div class="fops-footer-links">
+        <a href="/fopsaboutus/">About Us</a>
+        <a href="/fopsresources/">Resources</a>
+        <a href="https://www.facebook.com/PowaySeniorCenter" target="_blank">Facebook</a>
+        <a href="https://gateway.clearent.net/paylink/000001634294/16126366" target="_blank">Donate</a>
+      </div>
+    </div>
+  </footer>
 
 </div>
+
+<script>
+  function toggleDropdown(e) {
+    e.stopPropagation();
+    document.getElementById('eventsDropdown').classList.toggle('open');
+  }
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('eventsDropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  });
+</script>
 
 </body>
 </html>
