@@ -417,6 +417,338 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
 </script>
+<!--
+  ═══════════════════════════════════════════════════════════
+  FOPS AI CHATBOT WIDGET
+  ═══════════════════════════════════════════════════════════
+  INSTRUCTIONS:
+  1. Paste the <style> block into your existing <style> section
+  2. Paste the widget HTML just before your closing </body> tag
+  3. Paste the <script> block at the bottom before </body>
+  4. Change BACKEND_URL to your actual Flask server URL
+  ═══════════════════════════════════════════════════════════
+-->
+
+<!-- ① ADD THIS TO YOUR <style> SECTION ─────────────────────────────────── -->
+<style>
+/* ── CHAT WIDGET ─────────────────────────────────────────── */
+#chat-bubble {
+  position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+  width: 58px; height: 58px; border-radius: 50%;
+  background: linear-gradient(135deg, #4a7c59, #2e5238);
+  color: #fff; font-size: 1.6rem;
+  border: none; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(46,82,56,0.45);
+  display: flex; align-items: center; justify-content: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+#chat-bubble:hover { transform: scale(1.08); box-shadow: 0 6px 28px rgba(46,82,56,0.55); }
+
+#chat-window {
+  position: fixed; bottom: 100px; right: 28px; z-index: 1000;
+  width: 360px; max-height: 520px;
+  background: #faf7f2; border-radius: 18px;
+  box-shadow: 0 16px 56px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column;
+  overflow: hidden; transition: all 0.3s ease;
+  font-family: 'DM Sans', sans-serif;
+}
+#chat-window.hidden { opacity: 0; pointer-events: none; transform: translateY(16px) scale(0.97); }
+
+.chat-header {
+  background: linear-gradient(135deg, #2e5238, #4a7c59);
+  color: #fff; padding: 1rem 1.25rem;
+  display: flex; align-items: center; gap: 0.75rem;
+}
+.chat-header-icon {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+}
+.chat-header-text h4 { font-size: 0.95rem; font-weight: 700; margin: 0; }
+.chat-header-text p  { font-size: 0.75rem; opacity: 0.8; margin: 0; }
+.chat-close {
+  margin-left: auto; background: none; border: none;
+  color: rgba(255,255,255,0.8); font-size: 1.3rem; cursor: pointer;
+  line-height: 1; padding: 0 2px;
+}
+.chat-close:hover { color: #fff; }
+
+#chat-messages {
+  flex: 1; overflow-y: auto; padding: 1rem;
+  display: flex; flex-direction: column; gap: 0.75rem;
+}
+#chat-messages::-webkit-scrollbar { width: 5px; }
+#chat-messages::-webkit-scrollbar-thumb { background: #c5d9ca; border-radius: 10px; }
+
+.msg {
+  max-width: 82%; padding: 0.65rem 0.9rem;
+  border-radius: 14px; font-size: 0.88rem; line-height: 1.55;
+  animation: msgIn 0.2s ease;
+}
+@keyframes msgIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+.msg.bot {
+  background: #fff; color: #1e2a1e;
+  border: 1px solid rgba(74,124,89,0.12);
+  border-bottom-left-radius: 4px; align-self: flex-start;
+}
+.msg.user {
+  background: linear-gradient(135deg, #4a7c59, #2e5238);
+  color: #fff; border-bottom-right-radius: 4px; align-self: flex-end;
+}
+.msg.rsvp-success {
+  background: #edf7f0; border: 1px solid #7aad8b;
+  color: #2e5238; font-size: 0.85rem; align-self: stretch;
+  text-align: center; border-radius: 10px;
+}
+.msg.rsvp-error {
+  background: #fef3e2; border: 1px solid #e8c37a;
+  color: #7a5c1e; font-size: 0.85rem; align-self: stretch;
+  text-align: center; border-radius: 10px;
+}
+
+.typing-indicator {
+  display: flex; gap: 4px; align-items: center;
+  background: #fff; border: 1px solid rgba(74,124,89,0.12);
+  padding: 0.65rem 0.9rem; border-radius: 14px;
+  border-bottom-left-radius: 4px; width: fit-content;
+}
+.typing-indicator span {
+  width: 7px; height: 7px; background: #7aad8b; border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce {
+  0%,60%,100% { transform: translateY(0); }
+  30% { transform: translateY(-6px); }
+}
+
+.chat-input-row {
+  display: flex; gap: 0.5rem; padding: 0.85rem;
+  border-top: 1px solid rgba(74,124,89,0.12);
+  background: #fff;
+}
+#chat-input {
+  flex: 1; border: 1.5px solid rgba(74,124,89,0.2);
+  border-radius: 20px; padding: 0.55rem 1rem;
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem;
+  outline: none; background: #faf7f2; color: #1e2a1e;
+  transition: border-color 0.2s;
+}
+#chat-input:focus { border-color: #4a7c59; }
+#chat-send {
+  width: 38px; height: 38px; border-radius: 50%;
+  background: #4a7c59; border: none; color: #fff;
+  font-size: 1rem; cursor: pointer; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+#chat-send:hover { background: #2e5238; }
+#chat-send:disabled { background: #c5d9ca; cursor: not-allowed; }
+
+.chat-suggestions {
+  display: flex; flex-wrap: wrap; gap: 0.4rem;
+  padding: 0 1rem 0.75rem;
+}
+.suggestion-chip {
+  background: #f0ebe0; border: 1px solid rgba(74,124,89,0.2);
+  color: #2e5238; font-size: 0.78rem; font-weight: 500;
+  padding: 0.3rem 0.7rem; border-radius: 20px;
+  cursor: pointer; transition: all 0.15s;
+}
+.suggestion-chip:hover { background: #4a7c59; color: #fff; border-color: #4a7c59; }
+
+@media (max-width: 420px) {
+  #chat-window { width: calc(100vw - 24px); right: 12px; bottom: 88px; }
+  #chat-bubble { right: 16px; bottom: 20px; }
+}
+</style>
+
+
+<!-- ② PASTE THIS JUST BEFORE </body> ───────────────────────────────────── -->
+
+<!-- Chat Bubble Button -->
+<button id="chat-bubble" onclick="toggleChat()" aria-label="Open chat assistant" title="Ask our AI assistant">
+  💬
+</button>
+
+<!-- Chat Window -->
+<div id="chat-window" class="hidden" role="dialog" aria-label="FOPS Chat Assistant">
+  <div class="chat-header">
+    <div class="chat-header-icon">🌿</div>
+    <div class="chat-header-text">
+      <h4>FOPS Assistant</h4>
+      <p>Ask me about events & programs</p>
+    </div>
+    <button class="chat-close" onclick="toggleChat()" aria-label="Close chat">✕</button>
+  </div>
+
+  <div id="chat-messages"></div>
+
+  <div class="chat-suggestions" id="chat-suggestions">
+    <button class="suggestion-chip" onclick="sendSuggestion('What events are coming up?')">📅 Upcoming events</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('How do I RSVP for lunch?')">🍽️ RSVP for lunch</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('When is the next BINGO?')">🎱 BINGO schedule</button>
+    <button class="suggestion-chip" onclick="sendSuggestion('Is there free tax help available?')">🧾 Tax prep help</button>
+  </div>
+
+  <div class="chat-input-row">
+    <input
+      id="chat-input"
+      type="text"
+      placeholder="Type your question…"
+      aria-label="Chat message"
+      onkeydown="if(event.key==='Enter') sendMessage()"
+    />
+    <button id="chat-send" onclick="sendMessage()" aria-label="Send message">➤</button>
+  </div>
+</div>
+
+
+<!-- ③ PASTE THIS SCRIPT BEFORE </body> ─────────────────────────────────── -->
+<script>
+// ── CONFIG — change this to your Flask server URL ──────────────────────────
+const BACKEND_URL = "http://localhost:8587"; // e.g. "https://your-app.onrender.com"
+
+// ── STATE ───────────────────────────────────────────────────────────────────
+let chatOpen = false;
+let messageHistory = []; // Stores full conversation for Claude context
+let hasGreeted = false;
+
+// ── TOGGLE ──────────────────────────────────────────────────────────────────
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const win = document.getElementById("chat-window");
+  const btn = document.getElementById("chat-bubble");
+
+  if (chatOpen) {
+    win.classList.remove("hidden");
+    btn.textContent = "✕";
+    btn.setAttribute("aria-label", "Close chat assistant");
+    if (!hasGreeted) {
+      setTimeout(() => addBotMessage(
+        "Hello! 👋 I'm the Friends of Poway Seniors assistant. I can help you find upcoming events, RSVP for lunch or BINGO, and answer questions about our programs. What can I help you with today?"
+      ), 300);
+      hasGreeted = true;
+    }
+    setTimeout(() => document.getElementById("chat-input").focus(), 400);
+  } else {
+    win.classList.add("hidden");
+    btn.textContent = "💬";
+    btn.setAttribute("aria-label", "Open chat assistant");
+  }
+}
+
+// ── SEND MESSAGE ─────────────────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById("chat-input");
+  const text = input.value.trim();
+  if (!text) return;
+
+  input.value = "";
+  hideSuggestions();
+  addUserMessage(text);
+
+  // Add to history for Claude
+  messageHistory.push({ role: "user", content: text });
+
+  // Disable input while waiting
+  setInputEnabled(false);
+  const typingEl = showTyping();
+
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ messages: messageHistory })
+    });
+
+    if (!res.ok) throw new Error(`Server error: ${res.status}`);
+    const data = await res.json();
+
+    removeTyping(typingEl);
+
+    // Show AI reply
+    addBotMessage(data.reply);
+    messageHistory.push({ role: "assistant", content: data.reply });
+
+    // Show RSVP confirmation if one was processed
+    if (data.rsvp_result) {
+      const cls = data.rsvp_result.success ? "rsvp-success" : "rsvp-error";
+      const icon = data.rsvp_result.success ? "✅" : "⚠️";
+      addSpecialMessage(`${icon} ${data.rsvp_result.message}`, cls);
+    }
+
+  } catch (err) {
+    removeTyping(typingEl);
+    addBotMessage("Sorry, I'm having trouble connecting right now. Please call us at (858) 668-4689 for immediate help! 📞");
+    console.error("Chat error:", err);
+  } finally {
+    setInputEnabled(true);
+    document.getElementById("chat-input").focus();
+  }
+}
+
+function sendSuggestion(text) {
+  document.getElementById("chat-input").value = text;
+  sendMessage();
+}
+
+// ── UI HELPERS ───────────────────────────────────────────────────────────────
+function addUserMessage(text) {
+  const el = document.createElement("div");
+  el.className = "msg user";
+  el.textContent = text;
+  appendMessage(el);
+}
+
+function addBotMessage(text) {
+  const el = document.createElement("div");
+  el.className = "msg bot";
+  // Basic markdown: **bold**, line breaks
+  el.innerHTML = text
+    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\n/g, "<br>");
+  appendMessage(el);
+}
+
+function addSpecialMessage(text, cls) {
+  const el = document.createElement("div");
+  el.className = `msg ${cls}`;
+  el.textContent = text;
+  appendMessage(el);
+}
+
+function showTyping() {
+  const el = document.createElement("div");
+  el.className = "typing-indicator";
+  el.innerHTML = "<span></span><span></span><span></span>";
+  appendMessage(el);
+  return el;
+}
+
+function removeTyping(el) {
+  if (el && el.parentNode) el.parentNode.removeChild(el);
+}
+
+function appendMessage(el) {
+  const msgs = document.getElementById("chat-messages");
+  msgs.appendChild(el);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideSuggestions() {
+  const s = document.getElementById("chat-suggestions");
+  if (s) s.style.display = "none";
+}
+
+function setInputEnabled(enabled) {
+  document.getElementById("chat-input").disabled = !enabled;
+  document.getElementById("chat-send").disabled = !enabled;
+}
+</script>
 
 </body>
 </html>
