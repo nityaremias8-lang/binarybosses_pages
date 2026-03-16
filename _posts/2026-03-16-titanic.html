@@ -1,0 +1,338 @@
+---
+layout: post
+title: Titanic Survival Predictor
+permalink: /titanic/predict
+---
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Titanic Survival Predictor</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #0a0a2e, #1a1a4e, #0d1b3e);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: #7eb8f7;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        input, select {
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+            color: white;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #7eb8f7;
+        }
+
+        select option {
+            background: #1a1a4e;
+            color: white;
+        }
+
+        .predict-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #4a90d9, #7eb8f7);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+
+        .predict-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .predict-btn:active { transform: translateY(0); }
+        .predict-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .result {
+            margin-top: 24px;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            display: none;
+        }
+
+        .result.survived {
+            background: rgba(39, 174, 96, 0.15);
+            border: 1px solid rgba(39, 174, 96, 0.4);
+        }
+
+        .result.perished {
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+        }
+
+        .result-emoji { font-size: 3rem; margin-bottom: 10px; }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .survived .result-title { color: #2ecc71; }
+        .perished .result-title { color: #e74c3c; }
+
+        .prob-bars { display: flex; flex-direction: column; gap: 10px; }
+
+        .prob-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.9rem;
+        }
+
+        .prob-label { width: 70px; text-align: right; color: rgba(255,255,255,0.7); }
+
+        .prob-bar-bg {
+            flex: 1;
+            background: rgba(255,255,255,0.1);
+            border-radius: 999px;
+            height: 10px;
+            overflow: hidden;
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.8s ease;
+        }
+
+        .survive-fill { background: #2ecc71; }
+        .die-fill { background: #e74c3c; }
+        .prob-pct { width: 45px; font-weight: 600; }
+
+        .error {
+            margin-top: 16px;
+            background: rgba(231, 76, 60, 0.15);
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: #e74c3c;
+            font-size: 0.9rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚢 Titanic Predictor</h1>
+        <p class="subtitle">Would you have survived the Titanic?</p>
+
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="name">Your Name</label>
+                <input type="text" id="name" placeholder="Enter your name" value="Test Passenger">
+            </div>
+
+            <div class="form-group">
+                <label for="pclass">Passenger Class</label>
+                <select id="pclass">
+                    <option value="1">1st Class (Luxury)</option>
+                    <option value="2" selected>2nd Class (Middle)</option>
+                    <option value="3">3rd Class (Economy)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="sex">Sex</label>
+                <select id="sex">
+                    <option value="female">Female</option>
+                    <option value="male">Male</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" id="age" min="1" max="100" value="25">
+            </div>
+
+            <div class="form-group">
+                <label for="fare">Fare Paid ($)</label>
+                <input type="number" id="fare" min="0" max="512" step="0.01" value="16.00">
+            </div>
+
+            <div class="form-group">
+                <label for="sibsp">Siblings / Spouses Aboard</label>
+                <input type="number" id="sibsp" min="0" max="10" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="parch">Parents / Children Aboard</label>
+                <input type="number" id="parch" min="0" max="10" value="0">
+            </div>
+
+            <div class="form-group">
+                <label for="embarked">Port of Embarkation</label>
+                <select id="embarked">
+                    <option value="S" selected>Southampton (S)</option>
+                    <option value="C">Cherbourg (C)</option>
+                    <option value="Q">Queenstown (Q)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="alone">Traveling Alone?</label>
+                <select id="alone">
+                    <option value="false" selected>No</option>
+                    <option value="true">Yes</option>
+                </select>
+            </div>
+        </div>
+
+        <button class="predict-btn" onclick="predict()">⚓ Predict My Survival</button>
+
+        <div class="error" id="error"></div>
+
+        <div class="result" id="result">
+            <div class="result-emoji" id="result-emoji"></div>
+            <div class="result-title" id="result-title"></div>
+            <div class="prob-bars">
+                <div class="prob-row">
+                    <span class="prob-label">Survive</span>
+                    <div class="prob-bar-bg">
+                        <div class="prob-bar-fill survive-fill" id="survive-bar" style="width:0%"></div>
+                    </div>
+                    <span class="prob-pct" id="survive-pct"></span>
+                </div>
+                <div class="prob-row">
+                    <span class="prob-label">Perish</span>
+                    <div class="prob-bar-bg">
+                        <div class="prob-bar-fill die-fill" id="die-bar" style="width:0%"></div>
+                    </div>
+                    <span class="prob-pct" id="die-pct"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function predict() {
+            const btn = document.querySelector('.predict-btn');
+            const errorEl = document.getElementById('error');
+            const resultEl = document.getElementById('result');
+
+            errorEl.style.display = 'none';
+            resultEl.style.display = 'none';
+            btn.disabled = true;
+            btn.textContent = 'Predicting...';
+
+            const payload = {
+                name: document.getElementById('name').value || 'Passenger',
+                pclass: parseInt(document.getElementById('pclass').value),
+                sex: document.getElementById('sex').value,
+                age: parseFloat(document.getElementById('age').value),
+                fare: parseFloat(document.getElementById('fare').value),
+                sibsp: parseInt(document.getElementById('sibsp').value),
+                parch: parseInt(document.getElementById('parch').value),
+                embarked: document.getElementById('embarked').value,
+                alone: document.getElementById('alone').value === 'true'
+            };
+
+            try {
+                const response = await fetch('http://127.0.0.1:8587/api/titanic/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+                const data = await response.json();
+                showResult(data);
+            } catch (err) {
+                errorEl.textContent = `Error: ${err.message}. Make sure the backend is running.`;
+                errorEl.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '⚓ Predict My Survival';
+            }
+        }
+
+        function showResult(data) {
+            const survived = data.survive > data.die;
+            const survivePct = Math.round(data.survive * 100);
+            const diePct = Math.round(data.die * 100);
+
+            const resultEl = document.getElementById('result');
+            resultEl.className = `result ${survived ? 'survived' : 'perished'}`;
+            resultEl.style.display = 'block';
+
+            document.getElementById('result-emoji').textContent = survived ? '🎉' : '💀';
+            document.getElementById('result-title').textContent = survived
+                ? `You would have SURVIVED! (${survivePct}%)`
+                : `You would have PERISHED... (${diePct}%)`;
+
+            setTimeout(() => {
+                document.getElementById('survive-bar').style.width = survivePct + '%';
+                document.getElementById('die-bar').style.width = diePct + '%';
+            }, 50);
+
+            document.getElementById('survive-pct').textContent = survivePct + '%';
+            document.getElementById('die-pct').textContent = diePct + '%';
+        }
+    </script>
+</body>
+</html>
