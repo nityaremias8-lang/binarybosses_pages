@@ -60,11 +60,9 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   .fops-nav-inner {
     max-width: 1100px; margin: 0 auto; padding: 0 2rem;
     height: 68px;
-    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    display: flex; align-items: center; justify-content: flex-end; gap: 0.1rem;
   }
-  .fops-logo {
     display: flex; align-items: center; gap: 10px;
-    text-decoration: none; flex-shrink: 0;
   }
   .fops-logo-icon {
     width: 38px; height: 38px; background: var(--sage); border-radius: 50%;
@@ -201,12 +199,34 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     font-style: italic;
     display: block;
   }
-  .fops-hero-img {
-    width: clamp(140px, 18vw, 220px);
-    height: clamp(140px, 18vw, 220px);
-    object-fit: contain;
-    filter: drop-shadow(0 8px 24px rgba(0,0,0,0.35));
+
+  /* ── LOGO IMAGE WITH WHITE CIRCLE ── */
+  .fops-hero-img-wrap {
+    position: relative;
+    width: clamp(260px, 32vw, 400px);
+    height: clamp(260px, 32vw, 400px);
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .fops-hero-img-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    border-radius: 50%;
+    box-shadow:
+      0 8px 40px rgba(0,0,0,0.20),
+      0 0 0 6px rgba(255,255,255,0.15);
+  }
+  .fops-hero-img {
+    position: relative;
+    z-index: 1;
+    width: 82%;
+    height: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
   }
 
   .fops-hero-sub {
@@ -298,10 +318,13 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     .fops-big-title { text-align: center; font-size: clamp(2.8rem, 10vw, 4.5rem); }
     .fops-big-title em { display: inline; }
     .fops-mv-cards { grid-template-columns: 1fr; }
-    .fops-logo span { display: none; }
     .fops-nav-link { padding: 0.4rem 0.65rem; font-size: 0.83rem; }
     .fops-hero { padding: 4rem 1.25rem 3.5rem; }
     .fops-mv { padding: 3.5rem 1.25rem 5rem; }
+    .fops-hero-img-wrap {
+      width: clamp(200px, 60vw, 280px);
+      height: clamp(200px, 60vw, 280px);
+    }
   }
 </style>
 </head>
@@ -311,11 +334,8 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   <!-- NAV -->
   <nav class="fops-nav">
     <div class="fops-nav-inner">
-      <a href="/fops/" class="fops-logo">
-        <div class="fops-logo-icon">🌲</div>
-        <span>Friends of Poway Seniors</span>
-      </a>
       <div class="fops-menu">
+        <a href="/fops/" class="fops-nav-link">Home</a>
         <div class="fops-dropdown" id="eventsDropdown">
           <button class="fops-nav-link" onclick="toggleDropdown(event)">
             Events <span class="fops-chevron">▼</span>
@@ -327,7 +347,7 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
             <a href="/fopsbingo/" class="fops-dp-item">
               <div class="fops-dp-icon">🎱</div> BINGO
             </a>
-            <a href="/fopslunchmd/" class="fops-dp-item">
+            <a href="/fopslunch/" class="fops-dp-item">
               <div class="fops-dp-icon">🍽️</div> Social Lunch
             </a>
             <a href="/fopsbday/" class="fops-dp-item">
@@ -354,11 +374,13 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
         <h1 class="fops-big-title">
           Friends of<br><em>Poway Seniors</em>
         </h1>
-        <img
-          src="/images/capstone/fops.png"
-          alt="Friends of Poway Seniors logo"
-          class="fops-hero-img"
-        />
+        <div class="fops-hero-img-wrap">
+          <img
+            src="/images/capstone/fops.png"
+            alt="Friends of Poway Seniors logo"
+            class="fops-hero-img"
+          />
+        </div>
       </div>
 
       <p class="fops-hero-sub fu fu4">
@@ -417,21 +439,9 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
 </script>
-<!--
-  ═══════════════════════════════════════════════════════════
-  FOPS AI CHATBOT WIDGET
-  ═══════════════════════════════════════════════════════════
-  INSTRUCTIONS:
-  1. Paste the <style> block into your existing <style> section
-  2. Paste the widget HTML just before your closing </body> tag
-  3. Paste the <script> block at the bottom before </body>
-  4. Change BACKEND_URL to your actual Flask server URL
-  ═══════════════════════════════════════════════════════════
--->
 
-<!-- ① ADD THIS TO YOUR <style> SECTION ─────────────────────────────────── -->
+<!-- CHAT WIDGET STYLES -->
 <style>
-/* ── CHAT WIDGET ─────────────────────────────────────────── */
 #chat-bubble {
   position: fixed; bottom: 28px; right: 28px; z-index: 1000;
   width: 58px; height: 58px; border-radius: 50%;
@@ -497,16 +507,6 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   background: linear-gradient(135deg, #4a7c59, #2e5238);
   color: #fff; border-bottom-right-radius: 4px; align-self: flex-end;
 }
-.msg.rsvp-success {
-  background: #edf7f0; border: 1px solid #7aad8b;
-  color: #2e5238; font-size: 0.85rem; align-self: stretch;
-  text-align: center; border-radius: 10px;
-}
-.msg.rsvp-error {
-  background: #fef3e2; border: 1px solid #e8c37a;
-  color: #7a5c1e; font-size: 0.85rem; align-self: stretch;
-  text-align: center; border-radius: 10px;
-}
 
 .typing-indicator {
   display: flex; gap: 4px; align-items: center;
@@ -559,22 +559,12 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   cursor: pointer; transition: all 0.15s;
 }
 .suggestion-chip:hover { background: #4a7c59; color: #fff; border-color: #4a7c59; }
-
-@media (max-width: 420px) {
-  #chat-window { width: calc(100vw - 24px); right: 12px; bottom: 88px; }
-  #chat-bubble { right: 16px; bottom: 20px; }
-}
 </style>
 
-
-<!-- ② PASTE THIS JUST BEFORE </body> ───────────────────────────────────── -->
-
-<!-- Chat Bubble Button -->
 <button id="chat-bubble" onclick="toggleChat()" aria-label="Open chat assistant" title="Ask our AI assistant">
   💬
 </button>
 
-<!-- Chat Window -->
 <div id="chat-window" class="hidden" role="dialog" aria-label="FOPS Chat Assistant">
   <div class="chat-header">
     <div class="chat-header-icon">🌿</div>
@@ -584,170 +574,81 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     </div>
     <button class="chat-close" onclick="toggleChat()" aria-label="Close chat">✕</button>
   </div>
-
   <div id="chat-messages"></div>
-
   <div class="chat-suggestions" id="chat-suggestions">
     <button class="suggestion-chip" onclick="sendSuggestion('What events are coming up?')">📅 Upcoming events</button>
     <button class="suggestion-chip" onclick="sendSuggestion('How do I RSVP for lunch?')">🍽️ RSVP for lunch</button>
     <button class="suggestion-chip" onclick="sendSuggestion('When is the next BINGO?')">🎱 BINGO schedule</button>
     <button class="suggestion-chip" onclick="sendSuggestion('Is there free tax help available?')">🧾 Tax prep help</button>
   </div>
-
   <div class="chat-input-row">
-    <input
-      id="chat-input"
-      type="text"
-      placeholder="Type your question…"
-      aria-label="Chat message"
-      onkeydown="if(event.key==='Enter') sendMessage()"
-    />
+    <input id="chat-input" type="text" placeholder="Type your question…" aria-label="Chat message" onkeydown="if(event.key==='Enter') sendMessage()"/>
     <button id="chat-send" onclick="sendMessage()" aria-label="Send message">➤</button>
   </div>
 </div>
 
-
-<!-- ③ PASTE THIS SCRIPT BEFORE </body> ─────────────────────────────────── -->
 <script>
-// ── CONFIG — change this to your Flask server URL ──────────────────────────
-const BACKEND_URL = "http://localhost:8587"; // e.g. "https://your-app.onrender.com"
-
-// ── STATE ───────────────────────────────────────────────────────────────────
+const BACKEND_URL = "http://localhost:8587";
 let chatOpen = false;
-let messageHistory = []; // Stores full conversation for Claude context
+let messageHistory = [];
 let hasGreeted = false;
 
-// ── TOGGLE ──────────────────────────────────────────────────────────────────
 function toggleChat() {
   chatOpen = !chatOpen;
   const win = document.getElementById("chat-window");
   const btn = document.getElementById("chat-bubble");
-
   if (chatOpen) {
     win.classList.remove("hidden");
     btn.textContent = "✕";
-    btn.setAttribute("aria-label", "Close chat assistant");
     if (!hasGreeted) {
-      setTimeout(() => addBotMessage(
-        "Hello! 👋 I'm the Friends of Poway Seniors assistant. I can help you find upcoming events, RSVP for lunch or BINGO, and answer questions about our programs. What can I help you with today?"
-      ), 300);
+      setTimeout(() => addBotMessage("Hello! 👋 I'm the Friends of Poway Seniors assistant. I can help you find upcoming events, RSVP for lunch or BINGO, and answer questions about our programs. What can I help you with today?"), 300);
       hasGreeted = true;
     }
     setTimeout(() => document.getElementById("chat-input").focus(), 400);
   } else {
     win.classList.add("hidden");
     btn.textContent = "💬";
-    btn.setAttribute("aria-label", "Open chat assistant");
   }
 }
 
-// ── SEND MESSAGE ─────────────────────────────────────────────────────────────
 async function sendMessage() {
   const input = document.getElementById("chat-input");
   const text = input.value.trim();
   if (!text) return;
-
   input.value = "";
   hideSuggestions();
   addUserMessage(text);
-
-  // Add to history for Claude
   messageHistory.push({ role: "user", content: text });
-
-  // Disable input while waiting
   setInputEnabled(false);
   const typingEl = showTyping();
-
   try {
     const res = await fetch(`${BACKEND_URL}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: messageHistory })
     });
-
     if (!res.ok) throw new Error(`Server error: ${res.status}`);
     const data = await res.json();
-
     removeTyping(typingEl);
-
-    // Show AI reply
     addBotMessage(data.reply);
     messageHistory.push({ role: "assistant", content: data.reply });
-
-    // Show RSVP confirmation if one was processed
-    if (data.rsvp_result) {
-      const cls = data.rsvp_result.success ? "rsvp-success" : "rsvp-error";
-      const icon = data.rsvp_result.success ? "✅" : "⚠️";
-      addSpecialMessage(`${icon} ${data.rsvp_result.message}`, cls);
-    }
-
   } catch (err) {
     removeTyping(typingEl);
     addBotMessage("Sorry, I'm having trouble connecting right now. Please call us at (858) 668-4689 for immediate help! 📞");
-    console.error("Chat error:", err);
   } finally {
     setInputEnabled(true);
     document.getElementById("chat-input").focus();
   }
 }
 
-function sendSuggestion(text) {
-  document.getElementById("chat-input").value = text;
-  sendMessage();
-}
-
-// ── UI HELPERS ───────────────────────────────────────────────────────────────
-function addUserMessage(text) {
-  const el = document.createElement("div");
-  el.className = "msg user";
-  el.textContent = text;
-  appendMessage(el);
-}
-
-function addBotMessage(text) {
-  const el = document.createElement("div");
-  el.className = "msg bot";
-  // Basic markdown: **bold**, line breaks
-  el.innerHTML = text
-    .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-    .replace(/\n/g, "<br>");
-  appendMessage(el);
-}
-
-function addSpecialMessage(text, cls) {
-  const el = document.createElement("div");
-  el.className = `msg ${cls}`;
-  el.textContent = text;
-  appendMessage(el);
-}
-
-function showTyping() {
-  const el = document.createElement("div");
-  el.className = "typing-indicator";
-  el.innerHTML = "<span></span><span></span><span></span>";
-  appendMessage(el);
-  return el;
-}
-
-function removeTyping(el) {
-  if (el && el.parentNode) el.parentNode.removeChild(el);
-}
-
-function appendMessage(el) {
-  const msgs = document.getElementById("chat-messages");
-  msgs.appendChild(el);
-  msgs.scrollTop = msgs.scrollHeight;
-}
-
-function hideSuggestions() {
-  const s = document.getElementById("chat-suggestions");
-  if (s) s.style.display = "none";
-}
-
-function setInputEnabled(enabled) {
-  document.getElementById("chat-input").disabled = !enabled;
-  document.getElementById("chat-send").disabled = !enabled;
-}
+function sendSuggestion(text) { document.getElementById("chat-input").value = text; sendMessage(); }
+function addUserMessage(text) { const el = document.createElement("div"); el.className = "msg user"; el.textContent = text; appendMessage(el); }
+function addBotMessage(text) { const el = document.createElement("div"); el.className = "msg bot"; el.innerHTML = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/\n/g, "<br>"); appendMessage(el); }
+function showTyping() { const el = document.createElement("div"); el.className = "typing-indicator"; el.innerHTML = "<span></span><span></span><span></span>"; appendMessage(el); return el; }
+function removeTyping(el) { if (el && el.parentNode) el.parentNode.removeChild(el); }
+function appendMessage(el) { const msgs = document.getElementById("chat-messages"); msgs.appendChild(el); msgs.scrollTop = msgs.scrollHeight; }
+function hideSuggestions() { const s = document.getElementById("chat-suggestions"); if (s) s.style.display = "none"; }
+function setInputEnabled(enabled) { document.getElementById("chat-input").disabled = !enabled; document.getElementById("chat-send").disabled = !enabled; }
 </script>
 
 </body>
