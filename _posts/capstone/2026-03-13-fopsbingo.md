@@ -809,9 +809,9 @@ permalink: /fopsbingo/
       console.log('Testing connection to:', testUrl);
       
       const response = await fetch(testUrl, {
+         ...fetchOptions,
         method: 'GET',
         headers: { 'Content-Type': 'application/json' },
-        ...fetchOptions,
         mode: 'cors'
       });
       
@@ -868,9 +868,9 @@ permalink: /fopsbingo/
     
     try {
       const response = await fetch(`${pythonURI}/api/bingo/volunteer`, {
+        ...fetchOptions,
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        ...fetchOptions,
         mode: 'cors',
         body: JSON.stringify(payload)
       });
