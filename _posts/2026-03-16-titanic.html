@@ -36,12 +36,12 @@ permalink: /titanic/predict
             text-align: center;
             font-size: 2rem;
             margin-bottom: 8px;
-            color: #7eb8f7;
+            color: white;
         }
 
         .subtitle {
             text-align: center;
-            color: rgba(255,255,255,0.5);
+            color: white;
             margin-bottom: 30px;
             font-size: 0.9rem;
         }
@@ -65,7 +65,8 @@ permalink: /titanic/predict
 
         label {
             font-size: 0.85rem;
-            color: rgba(255,255,255,0.7);
+            color: #ffffff !important;
+            opacity: 1 !important;
             font-weight: 500;
         }
 
@@ -79,9 +80,17 @@ permalink: /titanic/predict
             transition: border-color 0.2s;
         }
 
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
         input:focus, select:focus {
             outline: none;
             border-color: #7eb8f7;
+        }
+
+        select {
+            color: white;
         }
 
         select option {
@@ -130,10 +139,11 @@ permalink: /titanic/predict
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 16px;
+            color: white;
         }
 
-        .survived .result-title { color: #2ecc71; }
-        .perished .result-title { color: #e74c3c; }
+        .survived .result-title { color: white; }
+        .perished .result-title { color: white; }
 
         .prob-bars { display: flex; flex-direction: column; gap: 10px; }
 
@@ -144,7 +154,7 @@ permalink: /titanic/predict
             font-size: 0.9rem;
         }
 
-        .prob-label { width: 70px; text-align: right; color: rgba(255,255,255,0.7); }
+        .prob-label { width: 70px; text-align: right; color: white; }
 
         .prob-bar-bg {
             flex: 1;
@@ -162,7 +172,7 @@ permalink: /titanic/predict
 
         .survive-fill { background: #2ecc71; }
         .die-fill { background: #e74c3c; }
-        .prob-pct { width: 45px; font-weight: 600; }
+        .prob-pct { width: 45px; font-weight: 600; color: white; }
 
         .error {
             margin-top: 16px;
@@ -170,9 +180,56 @@ permalink: /titanic/predict
             border: 1px solid rgba(231, 76, 60, 0.4);
             border-radius: 10px;
             padding: 12px 16px;
-            color: #e74c3c;
+            color: white;
             font-size: 0.9rem;
             display: none;
+        }
+
+        .health-check {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .health-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .health-btn:hover {
+            background: rgba(255,255,255,0.2);
+        }
+
+        /* FIXED: Ensure all text in inputs is white and background is transparent */
+        input[type="text"], 
+        input[type="number"], 
+        input[type="email"], 
+        input[type="password"],
+        textarea,
+        select {
+            color: white !important;
+            background: rgba(255,255,255,0.08) !important; /* FIXED: prevents browser overriding to white */
+            -webkit-text-fill-color: white !important;     /* FIXED: needed for some browsers (Safari/Chrome) */
+        }
+
+        /* FIXED: Autofill styling override so browser doesn't inject white background */
+        input:-webkit-autofill,
+        input:-webkit-autofill:hover,
+        input:-webkit-autofill:focus {
+            -webkit-box-shadow: 0 0 0px 1000px rgba(30, 30, 80, 0.9) inset !important;
+            -webkit-text-fill-color: white !important;
+        }
+
+        /* Style for the number input spinner */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            opacity: 0.5;
+            background: white;
         }
     </style>
 </head>
@@ -180,6 +237,10 @@ permalink: /titanic/predict
     <div class="container">
         <h1>🚢 Titanic Predictor</h1>
         <p class="subtitle">Would you have survived the Titanic?</p>
+
+        <div class="health-check">
+            <button class="health-btn" onclick="checkHealth()">🩺 Check Backend Connection</button>
+        </div>
 
         <div class="form-grid">
             <div class="form-group full-width">
@@ -200,7 +261,7 @@ permalink: /titanic/predict
                 <label for="sex">Sex</label>
                 <select id="sex">
                     <option value="female">Female</option>
-                    <option value="male">Male</option>
+                    <option value="male" selected>Male</option>
                 </select>
             </div>
 
@@ -236,8 +297,8 @@ permalink: /titanic/predict
             <div class="form-group">
                 <label for="alone">Traveling Alone?</label>
                 <select id="alone">
-                    <option value="false" selected>No</option>
-                    <option value="true">Yes</option>
+                    <option value="false" selected>No (with family)</option>
+                    <option value="true">Yes (alone)</option>
                 </select>
             </div>
         </div>
@@ -255,20 +316,64 @@ permalink: /titanic/predict
                     <div class="prob-bar-bg">
                         <div class="prob-bar-fill survive-fill" id="survive-bar" style="width:0%"></div>
                     </div>
-                    <span class="prob-pct" id="survive-pct"></span>
+                    <span class="prob-pct" id="survive-pct">0%</span>
                 </div>
                 <div class="prob-row">
                     <span class="prob-label">Perish</span>
                     <div class="prob-bar-bg">
                         <div class="prob-bar-fill die-fill" id="die-bar" style="width:0%"></div>
                     </div>
-                    <span class="prob-pct" id="die-pct"></span>
+                    <span class="prob-pct" id="die-pct">0%</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Get the base URL - update this to match your backend
+        const API_BASE_URL = window.location.protocol + '//' + window.location.hostname + ':8587';
+        // Or if you're using a different port, change it here:
+        // const API_BASE_URL = 'http://127.0.0.1:8587;
+
+        async function checkHealth() {
+            const errorEl = document.getElementById('error');
+            const btn = document.querySelector('.health-btn');
+            const originalText = btn.textContent;
+            
+            btn.textContent = 'Checking...';
+            btn.disabled = true;
+            errorEl.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/titanic/health`, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+
+                if (!response.ok) throw new Error(`Health check failed: ${response.status}`);
+
+                const data = await response.json();
+                
+                if (data.status === 'healthy') {
+                    errorEl.style.background = 'rgba(39, 174, 96, 0.15)';
+                    errorEl.style.border = '1px solid rgba(39, 174, 96, 0.4)';
+                    errorEl.style.color = 'white';
+                    errorEl.textContent = `✅ Backend is healthy! Model loaded: ${data.model_loaded}`;
+                } else {
+                    throw new Error('Backend unhealthy');
+                }
+            } catch (err) {
+                errorEl.style.background = 'rgba(231, 76, 60, 0.15)';
+                errorEl.style.border = '1px solid rgba(231, 76, 60, 0.4)';
+                errorEl.style.color = 'white';
+                errorEl.textContent = `❌ Cannot connect to backend at ${API_BASE_URL}. Make sure the Flask server is running.`;
+            } finally {
+                errorEl.style.display = 'block';
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        }
+
         async function predict() {
             const btn = document.querySelector('.predict-btn');
             const errorEl = document.getElementById('error');
@@ -278,6 +383,10 @@ permalink: /titanic/predict
             resultEl.style.display = 'none';
             btn.disabled = true;
             btn.textContent = 'Predicting...';
+
+            // Reset bars
+            document.getElementById('survive-bar').style.width = '0%';
+            document.getElementById('die-bar').style.width = '0%';
 
             const payload = {
                 name: document.getElementById('name').value || 'Passenger',
@@ -291,19 +400,31 @@ permalink: /titanic/predict
                 alone: document.getElementById('alone').value === 'true'
             };
 
+            console.log('Sending payload:', payload);
+            console.log('To URL:', `${API_BASE_URL}/api/titanic/predict`);
+
             try {
-                const response = await fetch('http://127.0.0.1:8587/api/titanic/predict', {
+                const response = await fetch(`${API_BASE_URL}/api/titanic/predict`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
 
-                if (!response.ok) throw new Error(`Server error: ${response.status}`);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server error (${response.status}): ${errorText}`);
+                }
 
                 const data = await response.json();
+                console.log('Received response:', data);
+                
                 showResult(data);
             } catch (err) {
-                errorEl.textContent = `Error: ${err.message}. Make sure the backend is running.`;
+                console.error('Prediction error:', err);
+                errorEl.textContent = `Error: ${err.message}. Make sure the backend is running at ${API_BASE_URL}`;
                 errorEl.style.display = 'block';
             } finally {
                 btn.disabled = false;
@@ -325,6 +446,7 @@ permalink: /titanic/predict
                 ? `You would have SURVIVED! (${survivePct}%)`
                 : `You would have PERISHED... (${diePct}%)`;
 
+            // Animate the bars
             setTimeout(() => {
                 document.getElementById('survive-bar').style.width = survivePct + '%';
                 document.getElementById('die-bar').style.width = diePct + '%';
@@ -333,6 +455,11 @@ permalink: /titanic/predict
             document.getElementById('survive-pct').textContent = survivePct + '%';
             document.getElementById('die-pct').textContent = diePct + '%';
         }
+
+        // Auto-check health on page load
+        window.addEventListener('load', () => {
+            setTimeout(checkHealth, 1000);
+        });
     </script>
 </body>
 </html>

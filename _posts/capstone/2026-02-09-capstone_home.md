@@ -137,23 +137,11 @@ Below are the capstone infographic pages created by student groups. Click an ima
        </div>
    </div>
 
-<<<<<<< HEAD
- <!-- Community Food Connection -->
-   <div class="flex items-start space-x-4 p-4 border rounded-lg">
-        <a href="{% post_url 2026-03-05-food %}">
-             <img src="/images/capstone/food-connection.png" alt="AutoTriage - Triage project" class="w-28 h-28 object-cover rounded" />
-        </a>
-        <div>
-             <h3 class="text-lg font-semibold"><a href="{% post_url 2026-03-05-food %}">Community Food Connection</a></h3>
-            <p class="text-sm text-gray-700">Help facilate easy access to food and resources for people who need it.</p>
-            <p class="text-xs text-gray-500 mt-2">Team: Nitya, Virginia, Ginny</p>
-        </div>
-    </div>
 
   <!-- FOPS -->
   <div class="flex items-start space-x-4 p-4 border rounded-lg">
        <a href="{% post_url 2026-03-09-friends-of-poway-seniors-capstone %}">
-           <img src="/images/capstone/fops_logo.png" alt="AutoTriage - Triage project" class="w-28 h-28 object-cover rounded" />
+           <img src="/images/capstone/fops.png" alt="AutoTriage - Triage project" class="w-28 h-28 object-cover rounded" />
        </a>
        <div>
            <h3 class="text-lg font-semibold"><a href="{% post_url 2026-03-09-friends-of-poway-seniors-capstone %}">Friends of Poway Seniors</a></h3>
@@ -161,20 +149,8 @@ Below are the capstone infographic pages created by student groups. Click an ima
            <p class="text-xs text-gray-500 mt-2">Team: Nitya, Virginia, Ginny</p>
        </div>
    </div>
- <!-- Club Pulse -->
-   <div class="flex items-start space-x-4 p-4 border rounded-lg">
-       <a href="{% post_url 2026-03-05-clubpulse %}">
-           <img src="/images/capstone/clubpulse.png" alt="AutoTriage - Triage project" class="w-28 h-28 object-cover rounded" />
-       </a>
-       <div>
-           <h3 class="text-lg font-semibold"><a href="{% post_url 2026-03-05-clubpulse %}">Club Pulse</a></h3>
-           <p class="text-sm text-gray-700">Wellness check for kids</p>
-           <p class="text-xs text-gray-500 mt-2">Team: Nitya, Virginia, Ginny</p>
-       </div>
-   </div>
- </div>
 
-=======
+
    <!-- Binary Beasts -->
    <div class="flex items-start space-x-4 p-4 border rounded-lg capstone-item CSA">
        <a href="{% post_url 2026-03-06-pybl-capstone %}">
@@ -354,4 +330,3 @@ Below are the capstone infographic pages created by student groups. Click an ima
        </div>
    </div>
 </div>
->>>>>>> upstream/main
