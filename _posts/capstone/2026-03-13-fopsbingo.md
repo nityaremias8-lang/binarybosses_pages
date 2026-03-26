@@ -5,20 +5,6 @@ title: Bingo
 permalink: /fopsbingo/
 ---
 
-<style>
-.post-title, .page-title, h1.title,
-.post-meta, .post-date, .reading-time,
-.breadcrumbs, nav.breadcrumb,
-.post-header, header.post-header,
-article > h1:first-child,
-.wrapper > h1, main > h1 { display: none !important; }
-body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !important; }
-.post-content, .content, main, article, .wrapper, #main-content {
-  padding: 0 !important; margin: 0 !important;
-  max-width: 100% !important; background: #2e5238 !important;
-}
-</style>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -313,7 +299,6 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     font-weight: 600;
   }
 
-  /* Doors Open Notice - MOVED to separate section below hours */
   .doors-open-notice {
     margin-top: 1.5rem;
     padding: 1.25rem;
@@ -656,7 +641,7 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   <div class="api-status">
     <div class="status-banner" id="apiStatus">
       <span class="status-dot disconnected" id="statusDot"></span>
-      <span class="status-text disconnected" id="statusText">Checking API connection to backend...</span>
+      <span class="status-text disconnected" id="statusText">Checking API connection...</span>
     </div>
   </div>
 
@@ -677,19 +662,10 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
             <span class="info-label">Hall:</span>
             <span class="info-value">Sycamore Hall</span>
           </div>
-          
           <ul class="hours-list">
-            <li>
-              <span class="day">Tuesday</span>
-              <span class="time">Sales: 9:30 AM • Game: 11:30 AM</span>
-            </li>
-            <li>
-              <span class="day">Sunday</span>
-              <span class="time">Sales: 10:30 AM • Game: 12:30 PM</span>
-            </li>
+            <li><span class="day">Tuesday</span><span class="time">Sales: 9:30 AM • Game: 11:30 AM</span></li>
+            <li><span class="day">Sunday</span><span class="time">Sales: 10:30 AM • Game: 12:30 PM</span></li>
           </ul>
-          
-          <!-- Doors Open Notice - MOVED outside the info-card to prevent overlap -->
           <div class="doors-open-notice">
             <p>Doors Open at 9:00 AM</p>
             <div class="note">Maximum of two adjacent seats may be reserved per player</div>
@@ -700,18 +676,9 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
       <div class="info-section">
         <h2>Pricing</h2>
         <div class="info-card">
-          <div class="price-tag">
-            <span class="price-label">Minimum Buy-in</span>
-            <span class="price-value">$13.00</span>
-          </div>
-          <div class="price-tag">
-            <span class="price-label">One of Each Game</span>
-            <span class="price-value">$19.00</span>
-          </div>
-          <div class="price-tag">
-            <span class="price-label">Poway Ball</span>
-            <span class="price-value">$1.00 each</span>
-          </div>
+          <div class="price-tag"><span class="price-label">Minimum Buy-in</span><span class="price-value">$13.00</span></div>
+          <div class="price-tag"><span class="price-label">One of Each Game</span><span class="price-value">$19.00</span></div>
+          <div class="price-tag"><span class="price-label">Poway Ball</span><span class="price-value">$1.00 each</span></div>
         </div>
       </div>
 
@@ -719,34 +686,18 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
         <h2>Tuesday Lunch Program</h2>
         <div class="lunch-card">
           <div class="lunch-title">Pre-order Required</div>
-          <p class="lunch-detail"><span class="lunch-highlight">Deadline:</span> Orders must be placed by 1:00 PM the day before Tuesday's game</p>
-          <p class="lunch-detail"><span class="lunch-highlight">Multiple Orders:</span> Multiple lunches may be purchased in advance</p>
-          <p class="lunch-detail"><span class="lunch-highlight">Note:</span> Lunch service is not available on Sundays</p>
-          <div style="margin-top: 1rem; padding: 0.75rem; background: rgba(0,0,0,0.3); border-radius: 8px;">
-            <p>Vouchers available at the front desk</p>
-          </div>
+          <p class="lunch-detail"><span class="lunch-highlight">Deadline:</span> Orders by 1:00 PM day before Tuesday game</p>
+          <p class="lunch-detail"><span class="lunch-highlight">Note:</span> Lunch not available on Sundays</p>
         </div>
       </div>
 
       <div class="info-section">
         <h2>Game Rules</h2>
         <div class="info-card">
-          <div class="rule-item">
-            <span class="rule-bullet">•</span>
-            <span>Numbers are called every 13 seconds</span>
-          </div>
-          <div class="rule-item">
-            <span class="rule-bullet">•</span>
-            <span>Players must be 18 years or older</span>
-          </div>
-          <div class="rule-item">
-            <span class="rule-bullet">•</span>
-            <span>Please be respectful of Bingo Volunteers</span>
-          </div>
-          <div class="rule-item">
-            <span class="rule-bullet">•</span>
-            <span>Management reserves the right to refuse service as deemed necessary</span>
-          </div>
+          <div class="rule-item"><span class="rule-bullet">•</span><span>Numbers called every 13 seconds</span></div>
+          <div class="rule-item"><span class="rule-bullet">•</span><span>Players must be 18 years or older</span></div>
+          <div class="rule-item"><span class="rule-bullet">•</span><span>Please be respectful of Bingo Volunteers</span></div>
+          <div class="rule-item"><span class="rule-bullet">•</span><span>Management reserves rights to refuse service</span></div>
         </div>
       </div>
 
@@ -770,88 +721,44 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
         <p>Join our team of Bingo volunteers</p>
       </div>
 
-      <!-- Alert container for messages -->
       <div id="alertContainer"></div>
 
       <form id="volunteerForm">
         <div class="form-row">
-          <div class="form-group">
-            <label for="first_name">First Name *</label>
-            <input type="text" id="first_name" name="first_name" required placeholder="John">
-          </div>
-          <div class="form-group">
-            <label for="last_name">Last Name *</label>
-            <input type="text" id="last_name" name="last_name" required placeholder="Doe">
-          </div>
+          <div class="form-group"><label for="first_name">First Name *</label><input type="text" id="first_name" required placeholder="John"></div>
+          <div class="form-group"><label for="last_name">Last Name *</label><input type="text" id="last_name" required placeholder="Doe"></div>
         </div>
-
-        <div class="form-group">
-          <label for="email">Email Address *</label>
-          <input type="email" id="email" name="email" required placeholder="your.email@example.com">
-        </div>
-
-        <div class="form-group">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="(858) 555-1234">
-        </div>
+        <div class="form-group"><label for="email">Email Address *</label><input type="email" id="email" required placeholder="your.email@example.com"></div>
+        <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" placeholder="(858) 555-1234"></div>
 
         <div class="form-group">
           <label>Availability</label>
           <div class="checkbox-group">
-            <div class="checkbox-item">
-              <input type="checkbox" id="avail_tue" name="availability_days" value="Tuesday">
-              <label for="avail_tue">Tuesday</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="avail_sun" name="availability_days" value="Sunday">
-              <label for="avail_sun">Sunday</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="avail_both" name="availability_days" value="Both">
-              <label for="avail_both">Both Days</label>
-            </div>
+            <div class="checkbox-item"><input type="checkbox" id="avail_tue" name="availability_days" value="Tuesday"><label for="avail_tue">Tuesday</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="avail_sun" name="availability_days" value="Sunday"><label for="avail_sun">Sunday</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="avail_both" name="availability_days" value="Both"><label for="avail_both">Both Days</label></div>
           </div>
         </div>
 
         <div class="form-group">
           <label>Preferred Role</label>
           <div class="checkbox-group">
-            <div class="checkbox-item">
-              <input type="checkbox" id="role_caller" name="preferred_roles" value="Number Caller">
-              <label for="role_caller">Number Caller</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="role_sales" name="preferred_roles" value="Ticket Sales">
-              <label for="role_sales">Ticket Sales</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="role_snacks" name="preferred_roles" value="Snack Bar">
-              <label for="role_snacks">Snack Bar</label>
-            </div>
-            <div class="checkbox-item">
-              <input type="checkbox" id="role_setup" name="preferred_roles" value="Setup/Cleanup">
-              <label for="role_setup">Setup / Cleanup</label>
-            </div>
+            <div class="checkbox-item"><input type="checkbox" id="role_caller" name="preferred_roles" value="Number Caller"><label for="role_caller">Number Caller</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="role_sales" name="preferred_roles" value="Ticket Sales"><label for="role_sales">Ticket Sales</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="role_snacks" name="preferred_roles" value="Snack Bar"><label for="role_snacks">Snack Bar</label></div>
+            <div class="checkbox-item"><input type="checkbox" id="role_setup" name="preferred_roles" value="Setup/Cleanup"><label for="role_setup">Setup / Cleanup</label></div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="experience">Previous Experience (optional)</label>
-          <textarea id="experience" name="experience" rows="2" placeholder="Please describe any relevant experience..."></textarea>
-        </div>
-
-        <button type="button" class="btn-submit" id="submitBtn" onclick="submitVolunteerForm()">
-          Submit Volunteer Application
-        </button>
+        <div class="form-group"><label for="experience">Previous Experience (optional)</label><textarea id="experience" rows="2" placeholder="Please describe any relevant experience..."></textarea></div>
+        <button type="button" class="btn-submit" id="submitBtn">Submit Volunteer Application</button>
       </form>
-
       <div style="margin-top: 1.5rem; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
-        <p>You will be contacted within 3-5 business days with next steps.</p>
+        <p>You will be contacted within 3-5 business days.</p>
       </div>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer class="fops-footer">
     <div class="fops-footer-inner">
       <span>© 2025 PVSCC 501(c)(3) · EIN: 51-0183384</span>
@@ -863,37 +770,48 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
       </div>
     </div>
   </footer>
-
 </div>
 
-<script>
-  // API Configuration
-  const API_BASE_URL = 'http://localhost:8587';
-  
-  // Dropdown toggle function
-  function toggleDropdown(e) {
-    e.stopPropagation();
-    document.getElementById('eventsDropdown').classList.toggle('open');
+<script type="importmap">
+  {
+    "imports": {
+      "@api/config": "{{ site.baseurl }}/assets/js/api/config.js"
+    }
   }
-  
-  document.addEventListener('click', function(e) {
-    const dd = document.getElementById('eventsDropdown');
-    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
-  });
+</script>
 
-  // API Connection Test
+<script type="module">
+  import { pythonURI, fetchOptions } from '@api/config';
+  
+  console.log('Bingo page using API base URL:', pythonURI);
+
+  // DOM elements
+  const statusDot = document.getElementById('statusDot');
+  const statusText = document.getElementById('statusText');
+  const alertContainer = document.getElementById('alertContainer');
+  const submitBtn = document.getElementById('submitBtn');
+  const volunteerForm = document.getElementById('volunteerForm');
+
+  // Helper: show alert message
+  function showAlert(message, type = 'error') {
+    if (!alertContainer) return;
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type}`;
+    alertDiv.textContent = message;
+    alertContainer.appendChild(alertDiv);
+    setTimeout(() => alertDiv.remove(), 5000);
+  }
+
+  // Test API connection dynamically using imported pythonURI
   async function testAPIConnection() {
-    const statusDot = document.getElementById('statusDot');
-    const statusText = document.getElementById('statusText');
-    
     try {
-      console.log('Testing connection to:', API_BASE_URL + '/api/bingo/test');
+      const testUrl = `${pythonURI}/api/bingo/test`;
+      console.log('Testing connection to:', testUrl);
       
-      const response = await fetch(API_BASE_URL + '/api/bingo/test', {
+      const response = await fetch(testUrl, {
         method: 'GET',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
+        ...fetchOptions,
         mode: 'cors'
       });
       
@@ -901,124 +819,99 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
         const data = await response.json();
         statusDot.className = 'status-dot connected';
         statusText.className = 'status-text connected';
-        statusText.textContent = 'API Connected - ' + (data.message || 'System Ready');
-        console.log('API Test Response:', data);
+        statusText.textContent = `✅ API Ready · ${data.message || 'System online'}`;
         return true;
       } else {
-        throw new Error('API returned status: ' + response.status);
+        throw new Error(`HTTP ${response.status}`);
       }
     } catch (error) {
-      console.error('API Connection Error:', error);
+      console.error('API connection error:', error);
       statusDot.className = 'status-dot disconnected';
       statusText.className = 'status-text disconnected';
-      statusText.textContent = 'API Connection Failed - Please ensure backend is running on port 8587';
+      statusText.textContent = `⚠️ Backend unreachable · ensure server runs at ${pythonURI}`;
       return false;
     }
   }
 
-  // Volunteer form submission
+  // Submit volunteer form using dynamic API URL
   async function submitVolunteerForm() {
-    const submitBtn = document.getElementById('submitBtn');
-    const alertContainer = document.getElementById('alertContainer');
+    if (!submitBtn) return;
     
     submitBtn.disabled = true;
     submitBtn.textContent = 'Submitting...';
+    if (alertContainer) alertContainer.innerHTML = '';
     
-    alertContainer.innerHTML = '';
-    
-    const form = document.getElementById('volunteerForm');
-    
-    const firstName = document.getElementById('first_name').value.trim();
-    const lastName = document.getElementById('last_name').value.trim();
-    const email = document.getElementById('email').value.trim();
+    const firstName = document.getElementById('first_name')?.value.trim();
+    const lastName = document.getElementById('last_name')?.value.trim();
+    const email = document.getElementById('email')?.value.trim();
     
     if (!firstName || !lastName || !email) {
-      alertContainer.innerHTML = `
-        <div class="alert alert-error">
-          Please fill in all required fields (First Name, Last Name, Email)
-        </div>
-      `;
+      showAlert('Please fill in all required fields (First Name, Last Name, Email)', 'error');
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Volunteer Application';
       return;
     }
     
-    const availabilityDays = [];
-    document.querySelectorAll('input[name="availability_days"]:checked').forEach(cb => {
-      availabilityDays.push(cb.value);
-    });
+    const availabilityDays = Array.from(document.querySelectorAll('input[name="availability_days"]:checked')).map(cb => cb.value);
+    const preferredRoles = Array.from(document.querySelectorAll('input[name="preferred_roles"]:checked')).map(cb => cb.value);
     
-    const preferredRoles = [];
-    document.querySelectorAll('input[name="preferred_roles"]:checked').forEach(cb => {
-      preferredRoles.push(cb.value);
-    });
-    
-    const data = {
+    const payload = {
       first_name: firstName,
       last_name: lastName,
       email: email,
-      phone: document.getElementById('phone').value.trim(),
+      phone: document.getElementById('phone')?.value.trim() || '',
       availability: availabilityDays.join(', '),
       availability_days: availabilityDays,
       preferred_roles: preferredRoles,
-      experience: document.getElementById('experience').value.trim()
+      experience: document.getElementById('experience')?.value.trim() || ''
     };
     
-    console.log('Submitting volunteer data:', data);
-    
     try {
-      const response = await fetch(API_BASE_URL + '/api/bingo/volunteer', {
+      const response = await fetch(`${pythonURI}/api/bingo/volunteer`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
+        ...fetchOptions,
         mode: 'cors',
-        body: JSON.stringify(data)
+        body: JSON.stringify(payload)
       });
       
       const result = await response.json();
-      console.log('API Response:', result);
-      
       if (result.success) {
-        alertContainer.innerHTML = `
-          <div class="alert alert-success">
-            ${result.message}<br>
-            <small>Volunteer ID: ${result.volunteer_id}</small>
-          </div>
-        `;
-        
-        form.reset();
-        
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-          cb.checked = false;
-        });
-        
+        showAlert(`${result.message || 'Application received!'} Volunteer ID: ${result.volunteer_id}`, 'success');
+        volunteerForm?.reset();
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
-        alertContainer.innerHTML = `
-          <div class="alert alert-error">
-            Error: ${result.error || 'An error occurred'}
-          </div>
-        `;
+        showAlert(`Error: ${result.error || 'Submission failed'}`, 'error');
       }
-    } catch (error) {
-      console.error('Submission Error:', error);
-      alertContainer.innerHTML = `
-        <div class="alert alert-error">
-          Network error. Please check if the backend server is running on port 8587<br>
-          <small>Error: ${error.message}</small>
-        </div>
-      `;
+    } catch (err) {
+      console.error('Submission error:', err);
+      showAlert(`Network error. Could not reach backend at ${pythonURI}. Ensure server is running.`, 'error');
     } finally {
       submitBtn.disabled = false;
       submitBtn.textContent = 'Submit Volunteer Application';
     }
   }
 
-  // Test API connection on page load
-  window.addEventListener('load', function() {
-    testAPIConnection();
+  // Dropdown toggle (vanilla)
+  window.toggleDropdown = function(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('eventsDropdown');
+    if (dd) dd.classList.toggle('open');
+  };
+  
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('eventsDropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
+  
+  // Attach submit handler
+  if (submitBtn) {
+    submitBtn.onclick = submitVolunteerForm;
+  }
+  
+  // Initialize: test connection when page loads
+  testAPIConnection();
 </script>
 
 </body>
