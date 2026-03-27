@@ -1,0 +1,837 @@
+---
+layout: base
+title: NetQuest - OSI & Deployment Adventure
+description: An interactive game teaching the OSI model and nginx/Flask deployment concepts through exploration and NPC dialogue.
+type: games
+courses: { csp: {week: 1} }
+permalink: /osi-game
+---
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetQuest: OSI & Deployment Adventure</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323:wght@400&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --pixel: 4px;
+    --green: #00ff88;
+    --cyan: #00eeff;
+    --orange: #ff7700;
+    --red: #ff3344;
+    --dark: #050a0f;
+    --panel: #0a1520;
+    --border: #1a3a5c;
+    --text: #c8e0ff;
+  }
+
+  body {
+    background: var(--dark);
+    font-family: 'VT323', monospace;
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #title-screen {
+    position: fixed; inset: 0;
+    background: var(--dark);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 100;
+    gap: 20px;
+  }
+
+  #title-screen h1 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(14px, 3vw, 28px);
+    color: var(--cyan);
+    text-shadow: 0 0 20px var(--cyan), 0 0 40px rgba(0,238,255,0.4);
+    text-align: center;
+    line-height: 1.6;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  #title-screen p {
+    font-size: clamp(16px, 2.5vw, 24px);
+    color: var(--green);
+    max-width: 500px;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .pixel-btn {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(8px, 1.5vw, 12px);
+    background: transparent;
+    border: 3px solid var(--green);
+    color: var(--green);
+    padding: 12px 24px;
+    cursor: pointer;
+    text-shadow: 0 0 10px var(--green);
+    box-shadow: 0 0 10px rgba(0,255,136,0.3), inset 0 0 10px rgba(0,255,136,0.05);
+    transition: all 0.1s;
+    image-rendering: pixelated;
+  }
+
+  .pixel-btn:hover {
+    background: rgba(0,255,136,0.15);
+    box-shadow: 0 0 20px rgba(0,255,136,0.6), inset 0 0 15px rgba(0,255,136,0.1);
+    transform: scale(1.03);
+  }
+
+  #game-wrapper {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+  }
+
+  #hud {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 12px;
+    background: var(--panel);
+    border-bottom: 2px solid var(--border);
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px, 1.2vw, 10px);
+    flex-shrink: 0;
+  }
+
+  #hud .level-name { color: var(--cyan); }
+  #hud .score { color: var(--orange); }
+  #hud .progress { color: var(--green); }
+
+  #canvas-container {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    image-rendering: pixelated;
+  }
+
+  /* Dialogue box */
+  #dialogue-box {
+    display: none;
+    position: absolute;
+    bottom: 70px; left: 50%;
+    transform: translateX(-50%);
+    width: 88%;
+    background: var(--panel);
+    border: 3px solid var(--cyan);
+    box-shadow: 0 0 20px rgba(0,238,255,0.4), inset 0 0 30px rgba(0,238,255,0.05);
+    padding: 14px 18px;
+    z-index: 20;
+    image-rendering: pixelated;
+  }
+
+  #dialogue-speaker {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(7px, 1.3vw, 10px);
+    color: var(--orange);
+    margin-bottom: 8px;
+    text-shadow: 0 0 8px var(--orange);
+  }
+
+  #dialogue-text {
+    font-size: clamp(14px, 2.2vw, 20px);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 40px;
+  }
+
+  #dialogue-continue {
+    text-align: right;
+    font-size: clamp(10px, 1.8vw, 15px);
+    color: var(--green);
+    margin-top: 8px;
+    animation: blink 0.8s step-end infinite;
+  }
+
+  /* Controls bar */
+  #controls-bar {
+    width: 100%;
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 6px;
+    background: var(--panel);
+    border-top: 2px solid var(--border);
+    font-size: clamp(10px, 1.5vw, 14px);
+    flex-shrink: 0;
+  }
+
+  #controls-bar span { color: var(--text); }
+  #controls-bar kbd {
+    background: rgba(0,238,255,0.15);
+    border: 1px solid var(--cyan);
+    border-radius: 3px;
+    padding: 1px 6px;
+    color: var(--cyan);
+    font-family: 'VT323', monospace;
+  }
+
+  /* Layer legend */
+  #layer-legend {
+    display: none;
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(5,10,15,0.9);
+    border: 2px solid var(--border);
+    padding: 10px 14px;
+    font-size: clamp(10px, 1.5vw, 14px);
+    z-index: 15;
+    min-width: 160px;
+  }
+
+  #layer-legend h4 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(6px, 1vw, 9px);
+    color: var(--cyan);
+    margin-bottom: 8px;
+  }
+
+  .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .legend-dot { width: 12px; height: 12px; flex-shrink: 0; }
+
+  /* Win screen */
+  #win-screen {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(5,10,15,0.95);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    gap: 18px;
+  }
+
+  #win-screen h2 {
+    font-family: 'Press Start 2P', monospace;
+    font-size: clamp(12px, 2.5vw, 22px);
+    color: var(--green);
+    text-shadow: 0 0 20px var(--green);
+    text-align: center;
+    line-height: 1.8;
+  }
+
+  #win-summary {
+    max-width: 600px;
+    font-size: clamp(14px, 2vw, 20px);
+    line-height: 1.7;
+    text-align: center;
+    color: var(--text);
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .scanlines {
+    position: fixed; inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 2px,
+      rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 300;
+  }
+
+  .npc-label {
+    position: absolute;
+    font-family: 'Press Start 2P', monospace;
+    font-size: 7px;
+    color: var(--cyan);
+    text-align: center;
+    pointer-events: none;
+    text-shadow: 0 0 6px var(--cyan);
+  }
+</style>
+</head>
+<body>
+<div class="scanlines"></div>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen">
+  <h1>NET QUEST<br><span style="color:var(--orange);font-size:0.6em">OSI & DEPLOYMENT</span></h1>
+  <p>Explore the OSI layers and learn how nginx, Flask, CORS, and WebSockets work together in real deployments.</p>
+  <p style="color:var(--cyan);font-size:clamp(13px,2vw,18px);">Talk to each NPC to unlock knowledge. Complete all 7 layers!</p>
+  <button class="pixel-btn" onclick="startGame()">▶ START MISSION</button>
+</div>
+
+<!-- GAME -->
+<div id="game-wrapper">
+  <div id="hud">
+    <span class="level-name" id="hud-level">PHYSICAL LAYER</span>
+    <span class="progress" id="hud-progress">Layers: 0/7</span>
+    <span class="score" id="hud-score">XP: 0</span>
+  </div>
+  <div id="canvas-container">
+    <canvas id="gameCanvas"></canvas>
+    <div id="layer-legend">
+      <h4>OSI LAYERS</h4>
+    </div>
+    <div id="dialogue-box">
+      <div id="dialogue-speaker">???</div>
+      <div id="dialogue-text"></div>
+      <div id="dialogue-continue">▼ Press E to continue</div>
+    </div>
+  </div>
+  <div id="controls-bar">
+    <span><kbd>W A S D</kbd> Move</span>
+    <span><kbd>E</kbd> Interact</span>
+    <span><kbd>ESC</kbd> Pause</span>
+  </div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="win-screen">
+  <h2>🎉 MISSION COMPLETE!<br>ALL OSI LAYERS MASTERED!</h2>
+  <div id="win-summary"></div>
+  <button class="pixel-btn" onclick="location.reload()">▶ PLAY AGAIN</button>
+</div>
+
+<script>
+// ============================================================
+// GAME ENGINE (adapted from provided architecture)
+// ============================================================
+
+const TILE = 40; // pixels per tile
+
+// OSI Layer NPC Data
+const OSI_NPCS = [
+  {
+    id: "physical", x: 1, y: 8, color: "#ff4444", layer: 1,
+    name: "Layer 1: Physical",
+    icon: "⚡",
+    dialogues: [
+      "⚡ PHYSICAL LAYER — Layer 1\n\nI'm the foundation! I handle raw electrical signals, light pulses, and radio waves traveling through cables, fiber optics, and wireless.\n\nWhen you request flask.opencodingsociety.com, your packet starts HERE as electrical signals on your ethernet cable or radio waves from your WiFi.",
+      "Think of me like the POSTAL TRUCKS of the internet. I don't care what's in the package — I just move bits (0s and 1s) across physical media.\n\nCommon tech I use: Ethernet cables (Cat5/Cat6), fiber optic cables, radio frequencies (2.4GHz/5GHz WiFi), coaxial cable.",
+      "📡 DEPLOYMENT CONNECTION:\nIn your nginx server at 3.233.212.71, my signals travel from the student's home router, through their ISP's fiber network, across the internet backbone, all the way to AWS's physical hardware.\n\n✅ Layer 1 UNLOCKED! Keep exploring!"
+    ]
+  },
+  {
+    id: "datalink", x: 3, y: 5, color: "#ff8800", layer: 2,
+    name: "Layer 2: Data Link",
+    icon: "🔗",
+    dialogues: [
+      "🔗 DATA LINK LAYER — Layer 2\n\nI organize raw bits into structured FRAMES and handle communication between directly connected devices using MAC addresses.\n\nMAC address = the hardware ID burned into your network card. Every device has a unique one like: A4:C3:F0:85:7A:2B",
+      "I'm responsible for error detection in transmission. If a frame gets corrupted, I catch it and request a retransmission!\n\nEthernet frames include: Destination MAC, Source MAC, EtherType, Data payload, and CRC checksum for error detection.",
+      "📡 DEPLOYMENT CONNECTION:\nAs your HTTP request to flask.opencodingsociety.com travels across each network hop, my frames carry the IP packets between routers. Each hop has its own MAC-to-MAC frame — the IP packet stays the same, but the frame wraps change!\n\n✅ Layer 2 UNLOCKED!"
+    ]
+  },
+  {
+    id: "network", x: 6, y: 3, color: "#ffcc00", layer: 3,
+    name: "Layer 3: Network",
+    icon: "🌐",
+    dialogues: [
+      "🌐 NETWORK LAYER — Layer 3\n\nI handle ROUTING — getting packets from source to destination across multiple networks using IP addresses!\n\nIP addresses are logical addresses (unlike MAC which is hardware). IPv4 looks like: 24.18.xxx.xxx\nIPv6: 2001:db8::1",
+      "I'm responsible for the path your data takes across the internet. Routers read my IP headers to decide where to forward each packet next.\n\nKey protocols I use: IP (Internet Protocol), ICMP (ping!), routing protocols like OSPF and BGP.",
+      "📡 DEPLOYMENT CONNECTION:\nIn your nginx config, when a student visits flask.opencodingsociety.com:\n→ DNS resolves it to 3.233.212.71\n→ Student's IP (24.18.xxx.xxx) is the SOURCE\n→ Server IP (3.233.212.71) is the DESTINATION\n→ I route packets across the internet between them!\n\n✅ Layer 3 UNLOCKED!"
+    ]
+  },
+  {
+    id: "transport", x: 9, y: 6, color: "#44ff44", layer: 4,
+    name: "Layer 4: Transport",
+    icon: "🚢",
+    dialogues: [
+      "🚢 TRANSPORT LAYER — Layer 4\n\nI provide end-to-end communication between applications using PORT NUMBERS!\n\nPorts identify which application gets the data:\n• Port 80 = HTTP\n• Port 443 = HTTPS\n• Port 8587 = Your Flask app\n• Port 8500 = Your Socket.IO server",
+      "TCP vs UDP — the great debate!\n\nTCP (Transmission Control Protocol):\n✅ Reliable, ordered delivery\n✅ Error checking\n✅ Handshake required\n❌ Slower\n\nUDP (User Datagram Protocol):\n✅ Fast, no handshake\n❌ No guaranteed delivery\nUsed for: video streaming, gaming, DNS",
+      "📡 DEPLOYMENT CONNECTION:\nYour nginx config uses TCP on port 443 (HTTPS). When nginx receives a connection, it forwards to localhost:8587 (Flask) or localhost:8500 (Socket.IO).\n\nWithout a reverse proxy, users would need to type flask.opencodingsociety.com:8587 — ugly! Nginx maps port 443 → port 8587 transparently.\n\n✅ Layer 4 UNLOCKED!"
+    ]
+  },
+  {
+    id: "session", x: 12, y: 9, color: "#00ccff", layer: 5,
+    name: "Layer 5: Session",
+    icon: "🤝",
+    dialogues: [
+      "🤝 SESSION LAYER — Layer 5\n\nI manage SESSIONS — the ongoing conversations between applications. I establish, maintain, and terminate connections.\n\nThink of a session like a phone call: you dial, talk, then hang up. I manage that lifecycle for network connections.",
+      "Sessions store STATE between requests. HTTP is stateless by default — each request is independent. Sessions fix that!\n\nCommon session mechanisms:\n• Cookies (browser stores session ID)\n• JWT tokens (self-contained auth)\n• Server-side sessions (Flask's session object)",
+      "📡 DEPLOYMENT CONNECTION:\nYour nginx config includes:\n  add_header 'Access-Control-Allow-Credentials' 'true'\n\nThis allows cookies/auth tokens to be sent cross-origin — essential for maintaining login sessions between pages.opencodingsociety.com and flask.opencodingsociety.com!\n\n✅ Layer 5 UNLOCKED!"
+    ]
+  },
+  {
+    id: "presentation", x: 15, y: 4, color: "#aa44ff", layer: 6,
+    name: "Layer 6: Presentation",
+    icon: "🎭",
+    dialogues: [
+      "🎭 PRESENTATION LAYER — Layer 6\n\nI handle DATA TRANSLATION, encryption, and compression! I make sure both sides speak the same format.\n\nI'm responsible for:\n• Encoding (UTF-8, ASCII, Unicode)\n• Encryption (TLS/SSL for HTTPS)\n• Compression (gzip)\n• Data format (JSON, XML, HTML)",
+      "TLS/SSL — this is where HTTPS lives! When you see the padlock in your browser, that's me encrypting your data with TLS.\n\nTLS Handshake:\n1. Client says 'hello' + supported cipher suites\n2. Server sends certificate\n3. Client verifies cert with Certificate Authority\n4. Both derive shared encryption keys\n5. Encrypted channel established!",
+      "📡 DEPLOYMENT CONNECTION:\nYour nginx config uses certbot/Let's Encrypt for TLS certificates. Nginx handles all encryption/decryption at Layer 6 — Flask only ever sees plaintext HTTP internally!\n\nThis is a huge security win: your Flask app doesn't need to handle TLS complexity at all.\n\n✅ Layer 6 UNLOCKED!"
+    ]
+  },
+  {
+    id: "application", x: 18, y: 7, color: "#ff44aa", layer: 7,
+    name: "Layer 7: Application",
+    icon: "🖥️",
+    dialogues: [
+      "🖥️ APPLICATION LAYER — Layer 7\n\nI'm where users interact! I define the protocols that applications use to communicate.\n\nKey protocols:\n• HTTP/HTTPS — web requests\n• WebSocket — real-time bidirectional comms\n• DNS — domain name resolution\n• SMTP — email\n• FTP — file transfer",
+      "HTTP Request anatomy:\nGET /api/users HTTP/1.1\nHost: flask.opencodingsociety.com\nOrigin: https://pages.opencodingsociety.com\nAuthorization: Bearer eyJhbG...\n\nHTTP Response:\nHTTP/1.1 200 OK\nAccess-Control-Allow-Origin: https://pages.opencodingsociety.com\nContent-Type: application/json",
+      "📡 CORS — Cross-Origin Resource Sharing!\nYour nginx config implements a WHITELIST:\n\n• Requests from *.opencodingsociety.com → ALLOWED\n• open-coding-society.github.io → ALLOWED\n• random-hacker.evil.com → BLOCKED!\n\nBrowsers enforce CORS — they check these headers before allowing JavaScript to read responses!\n\n✅ Layer 7 UNLOCKED! You've mastered the OSI model!",
+      "🚀 WEBSOCKETS at Layer 7!\nYour nginx /socket.io/ block enables real-time features:\n\nHTTP → WebSocket upgrade:\n1. Browser: 'Upgrade: websocket'\n2. Server: '101 Switching Protocols'\n3. Persistent bidirectional connection!\n\nUse cases: live chat, collaborative coding, real-time notifications — all without polling!\n\n🎉 CONGRATULATIONS! Mission Complete!"
+    ]
+  }
+];
+
+// CORS/Nginx knowledge NPC
+const NGINX_NPC = {
+  id: "nginx", x: 10, y: 11, color: "#00ff88", layer: 0,
+  name: "Nginx Professor",
+  icon: "⚙️",
+  dialogues: [
+    "⚙️ NGINX — THE REVERSE PROXY\n\nWithout me, Flask would need to listen on port 443 and handle SSL itself. Instead:\n\nUser → :443 (nginx) → :8587 (Flask)\n\nI sit between the internet and your app, handling the hard stuff so Flask can focus on business logic!",
+    "WHY A REVERSE PROXY?\n\n🔒 Security: Flask only listens on localhost — never exposed to internet\n🔑 SSL/TLS: I handle HTTPS so Flask doesn't have to\n🚀 Performance: I can cache responses and serve static files\n🌐 Multiple apps: One server hosts many apps on different ports\n⚖️ Load balancing: Distribute traffic across multiple backends",
+    "CORS PREFLIGHT FLOW:\n1. Browser wants to POST to flask.opencodingsociety.com\n2. Browser first sends OPTIONS request (preflight)\n3. Nginx checks: is this origin on the whitelist?\n4. If YES → responds 204 with CORS headers\n5. Browser sends the real POST request\n6. Never reaches Flask until preflight passes!\n\nNginx blocks attackers before they touch your app code! 🛡️"
+  ]
+};
+
+// ============================================================
+// GAME STATE
+// ============================================================
+const gameState = {
+  playerX: 80, playerY: 200,
+  velocityX: 0, velocityY: 0,
+  speed: 3,
+  pressedKeys: {},
+  unlockedLayers: new Set(),
+  xp: 0,
+  activeDialogue: null,
+  dialogueIndex: 0,
+  isPaused: false,
+  levelComplete: false,
+  canvasW: 900, canvasH: 520,
+  worldW: 22 * TILE, // tiles wide
+};
+
+// Combine all NPCs
+const ALL_NPCS = [...OSI_NPCS, NGINX_NPC];
+
+// NPC runtime state
+ALL_NPCS.forEach(npc => {
+  npc.px = npc.x * TILE;
+  npc.py = npc.y * TILE;
+  npc.talked = false;
+  npc.dialogueProgress = 0;
+});
+
+// ============================================================
+// CANVAS SETUP
+// ============================================================
+let canvas, ctx, cameraX = 0;
+
+function initCanvas() {
+  canvas = document.getElementById('gameCanvas');
+  const container = document.getElementById('canvas-container');
+  canvas.width = container.clientWidth || 900;
+  canvas.height = container.clientHeight || 480;
+  gameState.canvasW = canvas.width;
+  gameState.canvasH = canvas.height;
+  ctx = canvas.getContext('2d');
+}
+
+// ============================================================
+// INPUT
+// ============================================================
+document.addEventListener('keydown', e => {
+  gameState.pressedKeys[e.key] = true;
+
+  // E to interact
+  if (e.key === 'e' || e.key === 'E') {
+    if (gameState.activeDialogue !== null) {
+      advanceDialogue();
+    } else {
+      tryInteract();
+    }
+  }
+
+  // ESC to pause/resume or close dialogue
+  if (e.key === 'Escape') {
+    if (gameState.activeDialogue !== null) {
+      closeDialogue();
+    } else {
+      gameState.isPaused = !gameState.isPaused;
+    }
+  }
+});
+
+document.addEventListener('keyup', e => {
+  delete gameState.pressedKeys[e.key];
+});
+
+// ============================================================
+// PLAYER MOVEMENT
+// ============================================================
+function updatePlayer() {
+  if (gameState.isPaused || gameState.activeDialogue !== null) return;
+
+  const keys = gameState.pressedKeys;
+  const spd = gameState.speed;
+  let dx = 0, dy = 0;
+
+  if (keys['w'] || keys['W'] || keys['ArrowUp'])    dy -= spd;
+  if (keys['s'] || keys['S'] || keys['ArrowDown'])   dy += spd;
+  if (keys['a'] || keys['A'] || keys['ArrowLeft'])   dx -= spd;
+  if (keys['d'] || keys['D'] || keys['ArrowRight'])  dx += spd;
+
+  gameState.playerX = Math.max(8, Math.min(gameState.worldW - 24, gameState.playerX + dx));
+  gameState.playerY = Math.max(8, Math.min(gameState.canvasH - 48, gameState.playerY + dy));
+
+  // Camera follows player
+  cameraX = Math.max(0, Math.min(gameState.worldW - gameState.canvasW, gameState.playerX - gameState.canvasW / 2));
+}
+
+// ============================================================
+// INTERACTION
+// ============================================================
+function tryInteract() {
+  const px = gameState.playerX, py = gameState.playerY;
+  for (const npc of ALL_NPCS) {
+    const dist = Math.hypot(npc.px - px, npc.py - py);
+    if (dist < 55) {
+      openDialogue(npc);
+      return;
+    }
+  }
+}
+
+function openDialogue(npc) {
+  gameState.activeDialogue = npc;
+  gameState.dialogueIndex = npc.dialogueProgress;
+  const box = document.getElementById('dialogue-box');
+  box.style.display = 'block';
+  document.getElementById('dialogue-speaker').textContent = npc.icon + ' ' + npc.name;
+  renderDialogueText(npc.dialogues[gameState.dialogueIndex]);
+}
+
+function renderDialogueText(text) {
+  document.getElementById('dialogue-text').textContent = text;
+}
+
+function advanceDialogue() {
+  const npc = gameState.activeDialogue;
+  if (!npc) return;
+
+  gameState.dialogueIndex++;
+  npc.dialogueProgress = gameState.dialogueIndex;
+
+  if (gameState.dialogueIndex >= npc.dialogues.length) {
+    // Completed this NPC's dialogues
+    if (!npc.talked) {
+      npc.talked = true;
+      if (npc.layer > 0) {
+        gameState.unlockedLayers.add(npc.layer);
+        gameState.xp += 100;
+        updateHUD();
+      } else {
+        gameState.xp += 75;
+        updateHUD();
+      }
+    }
+    npc.dialogueProgress = 0; // reset for replay
+    closeDialogue();
+    checkWinCondition();
+    return;
+  }
+
+  renderDialogueText(npc.dialogues[gameState.dialogueIndex]);
+}
+
+function closeDialogue() {
+  gameState.activeDialogue = null;
+  document.getElementById('dialogue-box').style.display = 'none';
+}
+
+function checkWinCondition() {
+  if (gameState.unlockedLayers.size >= 7 && !gameState.levelComplete) {
+    gameState.levelComplete = true;
+    setTimeout(showWinScreen, 800);
+  }
+}
+
+function showWinScreen() {
+  const summary = `
+    You've mastered all 7 OSI layers and learned how nginx, Flask, CORS, and WebSockets work in real deployments!
+    
+    ✅ Physical → Electrical signals & cables
+    ✅ Data Link → MAC addresses & frames
+    ✅ Network → IP routing across the internet
+    ✅ Transport → TCP ports & connection control
+    ✅ Session → Cookies & stateful connections
+    ✅ Presentation → TLS/HTTPS encryption
+    ✅ Application → HTTP, WebSocket, CORS, DNS
+    
+    Total XP Earned: ${gameState.xp}
+  `;
+  document.getElementById('win-summary').textContent = summary;
+  document.getElementById('win-screen').style.display = 'flex';
+}
+
+function updateHUD() {
+  document.getElementById('hud-progress').textContent = `Layers: ${gameState.unlockedLayers.size}/7`;
+  document.getElementById('hud-score').textContent = `XP: ${gameState.xp}`;
+  // Update level name to highest unlocked
+  const highest = Math.max(...Array.from(gameState.unlockedLayers), 0);
+  const layerNames = ['', 'Physical', 'Data Link', 'Network', 'Transport', 'Session', 'Presentation', 'Application'];
+  if (highest > 0) document.getElementById('hud-level').textContent = layerNames[highest] + ' LAYER ✅';
+}
+
+// ============================================================
+// DRAW WORLD
+// ============================================================
+function drawWorld() {
+  ctx.clearRect(0, 0, gameState.canvasW, gameState.canvasH);
+
+  // Background gradient
+  const bg = ctx.createLinearGradient(0, 0, 0, gameState.canvasH);
+  bg.addColorStop(0, '#020810');
+  bg.addColorStop(1, '#050e1a');
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, gameState.canvasW, gameState.canvasH);
+
+  // Grid lines (circuit board aesthetic)
+  ctx.strokeStyle = 'rgba(0,100,180,0.12)';
+  ctx.lineWidth = 1;
+  const gsize = TILE;
+  for (let x = (-cameraX % gsize); x < gameState.canvasW; x += gsize) {
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, gameState.canvasH); ctx.stroke();
+  }
+  for (let y = 0; y < gameState.canvasH; y += gsize) {
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(gameState.canvasW, y); ctx.stroke();
+  }
+
+  // Floor
+  ctx.fillStyle = '#081525';
+  ctx.fillRect(0, gameState.canvasH - 20, gameState.canvasW, 20);
+  ctx.fillStyle = '#0a2040';
+  ctx.fillRect(0, gameState.canvasH - 22, gameState.canvasW, 3);
+
+  // Draw OSI layer zones
+  const zoneColors = ['#ff444411','#ff880011','#ffcc0011','#44ff4411','#00ccff11','#aa44ff11','#ff44aa11'];
+  const zoneW = gameState.worldW / 7;
+  for (let i = 0; i < 7; i++) {
+    const sx = i * zoneW - cameraX;
+    ctx.fillStyle = zoneColors[i];
+    ctx.fillRect(sx, 0, zoneW, gameState.canvasH - 20);
+    // Zone divider
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([6, 6]);
+    ctx.beginPath(); ctx.moveTo(sx + zoneW, 0); ctx.lineTo(sx + zoneW, gameState.canvasH - 20); ctx.stroke();
+    ctx.setLineDash([]);
+    // Zone label
+    const layerNames = ['PHYSICAL','DATA LINK','NETWORK','TRANSPORT','SESSION','PRESENTATION','APPLICATION'];
+    ctx.fillStyle = 'rgba(255,255,255,0.07)';
+    ctx.font = 'bold 14px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(`L${i+1}: ${layerNames[i]}`, sx + zoneW/2, gameState.canvasH - 32);
+  }
+
+  // Draw decorative "server rack" at far right
+  drawServerRack(19 * TILE - cameraX, 1 * TILE);
+
+  // Draw NPCs
+  ALL_NPCS.forEach(drawNPC);
+
+  // Draw player
+  drawPlayer();
+
+  // Draw floating indicators above nearby NPCs
+  ALL_NPCS.forEach(npc => {
+    const dist = Math.hypot(npc.px - gameState.playerX, npc.py - gameState.playerY);
+    if (dist < 55 && gameState.activeDialogue === null) {
+      const sx = npc.px - cameraX;
+      ctx.fillStyle = 'rgba(0,238,255,0.9)';
+      ctx.font = '9px "Press Start 2P"';
+      ctx.textAlign = 'center';
+      ctx.fillText('[E]', sx + 16, npc.py - 10);
+    }
+  });
+
+  // Pause overlay
+  if (gameState.isPaused) {
+    ctx.fillStyle = 'rgba(0,0,0,0.65)';
+    ctx.fillRect(0, 0, gameState.canvasW, gameState.canvasH);
+    ctx.fillStyle = '#00eeff';
+    ctx.font = '18px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('PAUSED', gameState.canvasW / 2, gameState.canvasH / 2 - 20);
+    ctx.fillStyle = '#c8e0ff';
+    ctx.font = '12px "VT323"';
+    ctx.fillText('Press ESC to resume', gameState.canvasW / 2, gameState.canvasH / 2 + 20);
+  }
+}
+
+function drawPlayer() {
+  const px = gameState.playerX - cameraX;
+  const py = gameState.playerY;
+  const t = Date.now() / 500;
+
+  // Body
+  ctx.fillStyle = '#00eeff';
+  ctx.shadowColor = '#00eeff';
+  ctx.shadowBlur = 12;
+  ctx.fillRect(px, py, 24, 28);
+
+  // Visor
+  ctx.fillStyle = '#051020';
+  ctx.fillRect(px + 4, py + 5, 16, 8);
+
+  // Visor glow
+  ctx.fillStyle = 'rgba(0,238,255,0.5)';
+  ctx.fillRect(px + 5, py + 6, 14, 6);
+
+  // Legs (animated)
+  const legOff = Math.sin(t * 3) * 3;
+  ctx.fillStyle = '#008899';
+  ctx.fillRect(px + 2, py + 28, 8, 10 + (Object.keys(gameState.pressedKeys).length > 0 ? legOff : 0));
+  ctx.fillRect(px + 14, py + 28, 8, 10 - (Object.keys(gameState.pressedKeys).length > 0 ? legOff : 0));
+
+  ctx.shadowBlur = 0;
+}
+
+function drawNPC(npc) {
+  const sx = npc.px - cameraX;
+  const sy = npc.py;
+  const t = Date.now() / 800;
+  const bob = Math.sin(t + npc.x) * 3;
+
+  const unlocked = npc.talked;
+  const col = npc.color;
+
+  ctx.shadowColor = col;
+  ctx.shadowBlur = unlocked ? 20 : 8;
+
+  // Body
+  ctx.fillStyle = unlocked ? col : col + '88';
+  ctx.fillRect(sx, sy + bob, 32, 36);
+
+  // Face
+  ctx.fillStyle = '#051020';
+  ctx.fillRect(sx + 5, sy + 6 + bob, 22, 14);
+
+  // Eyes
+  ctx.fillStyle = unlocked ? '#ffffff' : '#666';
+  ctx.fillRect(sx + 8, sy + 9 + bob, 5, 6);
+  ctx.fillRect(sx + 19, sy + 9 + bob, 5, 6);
+
+  // Icon above
+  ctx.font = '18px serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(npc.icon, sx + 16, sy + bob - 6);
+
+  // Checkmark if talked
+  if (unlocked) {
+    ctx.fillStyle = '#00ff88';
+    ctx.font = '12px "Press Start 2P"';
+    ctx.textAlign = 'center';
+    ctx.fillText('✓', sx + 16, sy + bob - 22);
+  }
+
+  // Label
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = unlocked ? col : '#888';
+  ctx.font = '9px "Press Start 2P"';
+  ctx.textAlign = 'center';
+  ctx.fillText(npc.name.split(':')[0], sx + 16, sy + 52 + bob);
+}
+
+function drawServerRack(sx, sy) {
+  if (sx < -120 || sx > gameState.canvasW + 20) return;
+  ctx.fillStyle = '#0a1e30';
+  ctx.strokeStyle = '#1a4060';
+  ctx.lineWidth = 2;
+  ctx.fillRect(sx, sy, 80, 140);
+  ctx.strokeRect(sx, sy, 80, 140);
+
+  // Server units
+  const colors = ['#00ff88','#00eeff','#ff7700','#ff3344','#aa44ff'];
+  for (let i = 0; i < 5; i++) {
+    ctx.fillStyle = '#071828';
+    ctx.fillRect(sx + 6, sy + 8 + i * 26, 68, 20);
+    const blink = (Date.now() / (300 + i * 113)) % 1 < 0.5;
+    ctx.fillStyle = blink ? colors[i] : colors[i] + '44';
+    ctx.beginPath();
+    ctx.arc(sx + 16, sy + 18 + i * 26, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#334455';
+    ctx.fillRect(sx + 26, sy + 14 + i * 26, 40, 6);
+    ctx.fillStyle = '#223344';
+    ctx.fillRect(sx + 26, sy + 22 + i * 26, 28, 3);
+  }
+
+  ctx.fillStyle = '#00eeff88';
+  ctx.font = '8px "Press Start 2P"';
+  ctx.textAlign = 'center';
+  ctx.fillText('SERVER', sx + 40, sy + 155);
+  ctx.fillText('3.233.212.71', sx + 40, sy + 167);
+}
+
+// ============================================================
+// GAME LOOP
+// ============================================================
+function gameLoop() {
+  updatePlayer();
+  drawWorld();
+  requestAnimationFrame(gameLoop);
+}
+
+// ============================================================
+// START
+// ============================================================
+function startGame() {
+  document.getElementById('title-screen').style.display = 'none';
+  document.getElementById('game-wrapper').style.display = 'flex';
+  initCanvas();
+  populateLegend();
+  gameLoop();
+}
+
+function populateLegend() {
+  const legend = document.getElementById('layer-legend');
+  legend.style.display = 'block';
+  const colors = ['#ff4444','#ff8800','#ffcc00','#44ff44','#00ccff','#aa44ff','#ff44aa'];
+  const names = ['Physical','Data Link','Network','Transport','Session','Presentation','Application'];
+  let html = '<h4>OSI LAYERS</h4>';
+  for (let i = 0; i < 7; i++) {
+    html += `<div class="legend-item"><div class="legend-dot" style="background:${colors[i]};box-shadow:0 0 6px ${colors[i]}"></div><span style="font-size:13px;color:${colors[i]}">L${i+1} ${names[i]}</span></div>`;
+  }
+  legend.innerHTML = html;
+}
+
+window.addEventListener('resize', () => {
+  if (canvas) {
+    const container = document.getElementById('canvas-container');
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    gameState.canvasW = canvas.width;
+    gameState.canvasH = canvas.height;
+  }
+});
+</script>
+</body>
+</html>
