@@ -1,0 +1,832 @@
+---
+layout: base
+title: NetQuest - OSI & Deployment Adventure
+description: An interactive game teaching the OSI model and nginx/Flask deployment concepts through exploration and NPC dialogue.
+type: games
+courses: { csp: {week: 1} }
+permalink: /bingogame
+---
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poway Seniors Bingo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --gold:   #c8932a;
+    --goldlt: #e8b84b;
+    --teal:   #2a7c6f;
+    --teallt: #3da090;
+    --navy:   #1a2e3b;
+    --navym:  #243d4f;
+    --warm:   #f9f4ed;
+    --text:   #2d2416;
+    --textmd: #5a4a35;
+    --white:  #ffffff;
+    --red:    #c0392b;
+    --green:  #27ae60;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--warm);
+    color: var(--text);
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── TITLE SCREEN (same pattern as NetQuest) ── */
+  #title-screen {
+    position: fixed; inset: 0;
+    background: linear-gradient(150deg, #1a2e3b 0%, #24415a 50%, #2a7c6f 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 100; gap: 14px; padding: 24px;
+  }
+
+  .badge {
+    background: rgba(200,147,42,0.2);
+    border: 1px solid rgba(200,147,42,0.5);
+    border-radius: 100px; padding: 5px 18px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 3px; text-transform: uppercase;
+    color: var(--goldlt);
+  }
+
+  #title-screen h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 700; color: #fff;
+    text-align: center; line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  #title-screen h1 em { color: var(--goldlt); font-style: italic; }
+
+  .title-desc {
+    font-size: clamp(13px, 1.8vw, 16px);
+    color: rgba(255,255,255,0.6);
+    text-align: center; max-width: 420px;
+    line-height: 1.6; font-weight: 300;
+  }
+
+  .info-row {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  }
+  .info-pill {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px; padding: 6px 16px;
+    font-size: 13px; color: rgba(255,255,255,0.75);
+  }
+
+  .pixel-btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px; font-weight: 600;
+    background: var(--gold); border: none;
+    color: var(--navy); padding: 14px 38px;
+    border-radius: 50px; cursor: pointer;
+    box-shadow: 0 8px 28px rgba(200,147,42,0.4);
+    transition: all 0.18s ease;
+    margin-top: 6px;
+  }
+  .pixel-btn:hover { background: var(--goldlt); transform: translateY(-2px); box-shadow: 0 12px 36px rgba(200,147,42,0.5); }
+  .pixel-btn:active { transform: translateY(0); }
+  .pixel-btn.secondary {
+    background: transparent; border: 2px solid var(--goldlt);
+    color: var(--goldlt); box-shadow: none;
+  }
+  .pixel-btn.secondary:hover { background: rgba(232,184,75,0.12); }
+
+  /* ── GAME WRAPPER ── */
+  #game-wrapper {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    width: 100%; height: 100vh;
+  }
+
+  /* ── HUD (same pattern as NetQuest) ── */
+  #hud {
+    width: 100%; max-width: 1000px;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 8px 20px; background: var(--navy); flex-shrink: 0;
+  }
+  .hud-left { display: flex; align-items: center; gap: 10px; }
+  .hud-logo { font-family: 'Lora', serif; font-size: 14px; font-weight: 700; color: var(--goldlt); }
+  .hud-sep { width: 1px; height: 18px; background: rgba(255,255,255,0.15); }
+  .hud-sub { font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 500; letter-spacing: 0.5px; }
+  .hud-right { display: flex; gap: 22px; }
+  .hud-stat { display: flex; flex-direction: column; align-items: flex-end; }
+  .hud-lbl { font-size: 9px; color: rgba(255,255,255,0.38); letter-spacing: 1px; text-transform: uppercase; }
+  .hud-val { font-size: 14px; font-weight: 600; color: var(--goldlt); }
+
+  /* ── MAIN GAME AREA ── */
+  #game-area {
+    display: flex; gap: 16px;
+    width: 100%; max-width: 1000px;
+    flex: 1; padding: 12px 16px;
+    overflow: hidden;
+  }
+
+  /* ── CALLER PANEL (left) ── */
+  #caller-panel {
+    display: flex; flex-direction: column;
+    gap: 10px; width: 220px; flex-shrink: 0;
+  }
+
+  .panel-title {
+    font-family: 'Lora', serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--navy); letter-spacing: 0.3px;
+  }
+
+  /* Called number display */
+  #called-display {
+    background: var(--navy);
+    border-radius: 12px; padding: 14px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 4px;
+    box-shadow: 0 4px 16px rgba(26,46,59,0.15);
+  }
+  #called-letter {
+    font-family: 'Lora', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 700; line-height: 1;
+  }
+  #called-number {
+    font-family: 'Lora', serif;
+    font-size: clamp(40px, 6vw, 60px);
+    font-weight: 700; color: #fff; line-height: 1;
+  }
+  #called-label { font-size: 10px; color: rgba(255,255,255,0.4); letter-spacing: 1px; margin-top: 2px; }
+
+  /* Call button */
+  #call-btn {
+    width: 100%;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 600;
+    background: var(--teal); border: none;
+    color: #fff; padding: 11px 0;
+    border-radius: 50px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(42,124,111,0.35);
+    transition: all 0.15s ease;
+  }
+  #call-btn:hover { background: var(--teallt); transform: translateY(-1px); }
+  #call-btn:disabled { background: #aaa; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* Recent calls */
+  #recent-box {
+    background: #fff;
+    border: 1px solid rgba(200,147,42,0.2);
+    border-radius: 10px; padding: 10px 12px;
+    flex: 1; overflow-y: auto;
+  }
+  #recent-box h4 { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--textmd); margin-bottom: 8px; }
+  #recent-list { display: flex; flex-wrap: wrap; gap: 5px; }
+  .rcall {
+    width: 36px; height: 26px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #fff;
+  }
+
+  /* ── BINGO CARD (center) ── */
+  #card-panel {
+    flex: 1; display: flex; flex-direction: column; gap: 8px;
+  }
+
+  .card-header {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 5px;
+  }
+  .card-header-cell {
+    background: var(--navy);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: clamp(18px, 2.5vw, 26px);
+    font-weight: 700; color: var(--goldlt);
+    padding: 8px 0;
+  }
+
+  #bingo-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 5px; flex: 1;
+  }
+
+  .bingo-cell {
+    background: #fff;
+    border: 2px solid rgba(26,46,59,0.1);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Lora', serif;
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 700; color: var(--navy);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    user-select: none;
+    position: relative;
+    box-shadow: 0 2px 6px rgba(26,46,59,0.07);
+  }
+  .bingo-cell:hover:not(.marked):not(.free) {
+    border-color: var(--gold);
+    transform: scale(1.04);
+    box-shadow: 0 4px 12px rgba(200,147,42,0.2);
+  }
+  .bingo-cell.marked {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+    transform: scale(1.02);
+  }
+  .bingo-cell.marked::after {
+    content: '';
+    position: absolute; inset: 5px;
+    background: radial-gradient(circle, var(--goldlt) 30%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0.35;
+  }
+  .bingo-cell.free {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--navy);
+    font-size: clamp(9px, 1.2vw, 12px);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 700; letter-spacing: 0.5px;
+    cursor: default;
+  }
+  .bingo-cell.winning {
+    background: var(--green) !important;
+    border-color: var(--green) !important;
+    animation: winPulse 0.5s ease infinite alternate;
+  }
+  @keyframes winPulse {
+    from { transform: scale(1); }
+    to   { transform: scale(1.06); }
+  }
+
+  /* ── CALLED BOARD (right) ── */
+  #board-panel {
+    width: 160px; flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .board-col { display: flex; flex-direction: column; gap: 3px; }
+  .board-col-hdr {
+    background: var(--navy);
+    border-radius: 6px; text-align: center;
+    font-family: 'Lora', serif; font-size: 14px;
+    font-weight: 700; padding: 5px 0;
+  }
+  .board-num {
+    border-radius: 5px; text-align: center;
+    font-size: 11px; font-weight: 600;
+    padding: 3px 0;
+    background: rgba(26,46,59,0.07);
+    color: var(--textmd);
+    transition: all 0.2s;
+  }
+  .board-num.called {
+    color: #fff !important;
+    font-weight: 700;
+  }
+
+  /* ── CONTROLS BAR ── */
+  #controls-bar {
+    width: 100%; max-width: 1000px;
+    display: flex; justify-content: center; gap: 24px;
+    padding: 6px 16px; background: var(--navy);
+    border-top: 1px solid rgba(255,255,255,0.07);
+    flex-shrink: 0;
+  }
+  .ctrl { display: flex; align-items: center; gap: 7px; font-size: 12px; color: rgba(255,255,255,0.5); }
+  .ctrl-key {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px; padding: 2px 9px; font-size: 11px;
+    font-weight: 600; color: rgba(255,255,255,0.75);
+  }
+
+  /* ── WIN SCREEN ── */
+  #win-screen {
+    display: none; position: fixed; inset: 0;
+    background: linear-gradient(150deg, #1a2e3b 0%, #24415a 50%, #2a7c6f 100%);
+    flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 200; gap: 20px; padding: 24px;
+  }
+  #win-screen h2 {
+    font-family: 'Lora', serif;
+    font-size: clamp(24px, 4vw, 42px);
+    color: var(--goldlt); text-align: center;
+    line-height: 1.3; font-weight: 700;
+  }
+  .win-detail {
+    font-size: clamp(14px, 2vw, 17px);
+    color: rgba(255,255,255,0.7); text-align: center;
+    max-width: 400px; line-height: 1.6;
+  }
+  .win-stats {
+    display: flex; gap: 24px;
+  }
+  .win-stat {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px; padding: 16px 24px;
+    text-align: center;
+  }
+  .win-stat-val { font-family: 'Lora', serif; font-size: 32px; font-weight: 700; color: var(--goldlt); }
+  .win-stat-lbl { font-size: 11px; color: rgba(255,255,255,0.45); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+
+  /* ── TOAST ── */
+  #toast {
+    position: fixed; top: 60px; left: 50%; transform: translateX(-50%) translateY(-20px);
+    background: var(--navy); color: #fff;
+    padding: 10px 22px; border-radius: 50px;
+    font-size: 13px; font-weight: 600;
+    border: 1px solid rgba(200,147,42,0.4);
+    opacity: 0; transition: all 0.3s ease;
+    z-index: 50; white-space: nowrap;
+    pointer-events: none;
+  }
+  #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* BINGO announcement */
+  #bingo-flash {
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,46,59,0.75);
+    align-items: center; justify-content: center;
+    z-index: 150;
+  }
+  #bingo-flash.show { display: flex; }
+  .bingo-word {
+    font-family: 'Lora', serif;
+    font-size: clamp(60px, 12vw, 120px);
+    font-weight: 700; color: var(--goldlt);
+    text-shadow: 0 0 60px rgba(232,184,75,0.6);
+    animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    letter-spacing: 8px;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.5); opacity: 0; }
+    to   { transform: scale(1);   opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TITLE SCREEN -->
+<div id="title-screen">
+  <div class="badge">Friends of Poway Seniors</div>
+  <h1><em>Bingo</em> Night!</h1>
+  <p class="title-desc">A classic game of Bingo — call numbers, mark your card, and shout BINGO when you win!</p>
+  <div class="info-row">
+    <div class="info-pill">🎱 75-Ball Bingo</div>
+    <div class="info-pill">5×5 Card</div>
+    <div class="info-pill">Auto-Caller</div>
+    <div class="info-pill">Row · Col · Diagonal</div>
+  </div>
+  <button class="pixel-btn" id="startBtn">Play Bingo →</button>
+  <p style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;">Click numbers on your card to mark them</p>
+</div>
+
+<!-- GAME -->
+<div id="game-wrapper">
+  <div id="hud">
+    <div class="hud-left">
+      <div class="hud-logo">Friends of Poway Seniors</div>
+      <div class="hud-sep"></div>
+      <div class="hud-sub">Bingo Night</div>
+    </div>
+    <div class="hud-right">
+      <div class="hud-stat">
+        <div class="hud-lbl">Numbers Called</div>
+        <div class="hud-val" id="hud-called">0 / 75</div>
+      </div>
+      <div class="hud-stat">
+        <div class="hud-lbl">Marked</div>
+        <div class="hud-val" id="hud-marked">0 / 25</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="game-area">
+
+    <!-- CALLER PANEL -->
+    <div id="caller-panel">
+      <div class="panel-title">📢 Caller</div>
+
+      <div id="called-display">
+        <div id="called-letter" style="color:#aaa;">—</div>
+        <div id="called-number">—</div>
+        <div id="called-label">LAST CALLED</div>
+      </div>
+
+      <button id="call-btn">Draw Next Number</button>
+
+      <div id="recent-box">
+        <h4>Called Numbers</h4>
+        <div id="recent-list"></div>
+      </div>
+    </div>
+
+    <!-- BINGO CARD -->
+    <div id="card-panel">
+      <div class="card-header" id="card-header"></div>
+      <div id="bingo-grid"></div>
+    </div>
+
+    <!-- BOARD -->
+    <div id="board-panel" id="board-panel"></div>
+
+  </div>
+
+  <div id="controls-bar">
+    <div class="ctrl"><span class="ctrl-key">Draw Next Number</span> Call a ball</div>
+    <div class="ctrl"><span class="ctrl-key">Click Cell</span> Mark your card</div>
+    <div class="ctrl">Rows · Columns · Diagonals win</div>
+  </div>
+</div>
+
+<!-- BINGO FLASH -->
+<div id="bingo-flash">
+  <div class="bingo-word">BINGO!</div>
+</div>
+
+<!-- WIN SCREEN -->
+<div id="win-screen">
+  <h2>🎉 BINGO!<br>You Won!</h2>
+  <p class="win-detail">Congratulations! You completed a line. Thanks for playing Bingo Night with Friends of Poway Seniors!</p>
+  <div class="win-stats">
+    <div class="win-stat">
+      <div class="win-stat-val" id="ws-called">—</div>
+      <div class="win-stat-lbl">Balls Called</div>
+    </div>
+    <div class="win-stat">
+      <div class="win-stat-val" id="ws-marked">—</div>
+      <div class="win-stat-lbl">Cells Marked</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:12px;">
+    <button class="pixel-btn" id="playAgainBtn">Play Again</button>
+    <button class="pixel-btn secondary" id="keepGoingBtn">Keep Playing</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONSTANTS (same engine pattern as NetQuest)
+// ═══════════════════════════════════════════════════════════════
+const LETTERS   = ['B','I','N','G','O'];
+const COL_RANGES = { B:[1,15], I:[16,30], N:[31,45], G:[46,60], O:[61,75] };
+const COL_COLORS = { B:'#c8932a', I:'#2a7c6f', N:'#2a5c7c', G:'#7c2a5c', O:'#c0392b' };
+
+// ═══════════════════════════════════════════════════════════════
+// GAME STATE
+// ═══════════════════════════════════════════════════════════════
+let gameState = {
+  card:         [],   // 5×5 array of numbers (0 = free square)
+  marked:       [],   // 5×5 boolean array
+  calledNums:   new Set(),
+  callOrder:    [],   // all 75 nums shuffled
+  callIndex:    0,
+  hasBingo:     false,
+  winningCells: new Set(),
+  ballsInBag:   [],
+};
+
+// ═══════════════════════════════════════════════════════════════
+// CARD GENERATION
+// ═══════════════════════════════════════════════════════════════
+function generateCard() {
+  const card = [];
+  LETTERS.forEach((l, ci) => {
+    const [lo, hi] = COL_RANGES[l];
+    const pool = shuffle(range(lo, hi));
+    const col = pool.slice(0, 5);
+    card.push(col);
+  });
+  // Transpose to row-major: card[row][col]
+  const rows = [];
+  for (let r = 0; r < 5; r++) {
+    rows.push(card.map(col => col[r]));
+  }
+  // Free space in center
+  rows[2][2] = 0;
+  return rows;
+}
+
+function range(lo, hi) {
+  const a = [];
+  for (let i = lo; i <= hi; i++) a.push(i);
+  return a;
+}
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+function initGame() {
+  gameState.card = generateCard();
+  gameState.marked = Array.from({length:5}, () => Array(5).fill(false));
+  gameState.marked[2][2] = true; // free space
+  gameState.calledNums = new Set();
+  gameState.callOrder = shuffle(range(1, 75));
+  gameState.callIndex = 0;
+  gameState.hasBingo = false;
+  gameState.winningCells = new Set();
+
+  renderCard();
+  renderBoard();
+  renderRecentCalls();
+  updateCalledDisplay('—', '—', '#aaa');
+  updateHUD();
+  document.getElementById('call-btn').disabled = false;
+  document.getElementById('win-screen').style.display = 'none';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RENDER CARD
+// ═══════════════════════════════════════════════════════════════
+function renderCard() {
+  // Header
+  const hdr = document.getElementById('card-header');
+  hdr.innerHTML = LETTERS.map(l =>
+    `<div class="card-header-cell" style="color:${COL_COLORS[l]}">${l}</div>`
+  ).join('');
+
+  // Grid
+  const grid = document.getElementById('bingo-grid');
+  grid.innerHTML = '';
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      const num = gameState.card[r][c];
+      const cell = document.createElement('div');
+      cell.className = 'bingo-cell';
+      cell.dataset.row = r;
+      cell.dataset.col = c;
+
+      if (num === 0) {
+        cell.classList.add('free', 'marked');
+        cell.textContent = 'FREE';
+      } else {
+        cell.textContent = num;
+        if (gameState.marked[r][c]) cell.classList.add('marked');
+      }
+
+      if (gameState.winningCells.has(`${r},${c}`)) cell.classList.add('winning');
+
+      cell.addEventListener('click', () => onCellClick(r, c));
+      grid.appendChild(cell);
+    }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CELL CLICK — mark if the number has been called
+// ═══════════════════════════════════════════════════════════════
+function onCellClick(r, c) {
+  if (gameState.card[r][c] === 0) return; // free space
+  const num = gameState.card[r][c];
+  if (!gameState.calledNums.has(num)) {
+    showToast(`${numToLetter(num)}-${num} hasn't been called yet!`);
+    return;
+  }
+  gameState.marked[r][c] = !gameState.marked[r][c];
+  renderCard();
+  updateHUD();
+  checkBingo();
+}
+
+function numToLetter(n) {
+  if (n <= 15) return 'B';
+  if (n <= 30) return 'I';
+  if (n <= 45) return 'N';
+  if (n <= 60) return 'G';
+  return 'O';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// CALL NEXT NUMBER
+// ═══════════════════════════════════════════════════════════════
+function callNext() {
+  if (gameState.callIndex >= 75) {
+    showToast('All 75 numbers have been called!');
+    document.getElementById('call-btn').disabled = true;
+    return;
+  }
+
+  const num = gameState.callOrder[gameState.callIndex++];
+  const letter = numToLetter(num);
+  gameState.calledNums.add(num);
+
+  // Update called display
+  updateCalledDisplay(letter, num, COL_COLORS[letter]);
+
+  // Auto-mark if number is on card
+  let autoMarked = false;
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 5; c++) {
+      if (gameState.card[r][c] === num) {
+        gameState.marked[r][c] = true;
+        autoMarked = true;
+      }
+    }
+  }
+
+  renderCard();
+  renderRecentCalls();
+  updateBoard(num);
+  updateHUD();
+
+  if (autoMarked) showToast(`${letter}-${num} is on your card! ✓`);
+
+  checkBingo();
+}
+
+function updateCalledDisplay(letter, num, color) {
+  document.getElementById('called-letter').textContent = letter;
+  document.getElementById('called-letter').style.color = color;
+  document.getElementById('called-number').textContent = num;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BINGO CHECK
+// ═══════════════════════════════════════════════════════════════
+function checkBingo() {
+  if (gameState.hasBingo) return;
+  const m = gameState.marked;
+  const wins = [];
+
+  // Rows
+  for (let r = 0; r < 5; r++) {
+    if (m[r].every(v => v)) {
+      wins.push(...[0,1,2,3,4].map(c => `${r},${c}`));
+    }
+  }
+  // Columns
+  for (let c = 0; c < 5; c++) {
+    if ([0,1,2,3,4].every(r => m[r][c])) {
+      wins.push(...[0,1,2,3,4].map(r => `${r},${c}`));
+    }
+  }
+  // Diagonals
+  if ([0,1,2,3,4].every(i => m[i][i]))   wins.push(...[0,1,2,3,4].map(i => `${i},${i}`));
+  if ([0,1,2,3,4].every(i => m[i][4-i])) wins.push(...[0,1,2,3,4].map(i => `${i},${4-i}`));
+
+  if (wins.length > 0) {
+    gameState.hasBingo = true;
+    gameState.winningCells = new Set(wins);
+    renderCard();
+    triggerBingo();
+  }
+}
+
+function triggerBingo() {
+  // Flash
+  const flash = document.getElementById('bingo-flash');
+  flash.classList.add('show');
+  setTimeout(() => {
+    flash.classList.remove('show');
+    showWinScreen();
+  }, 1800);
+}
+
+function showWinScreen() {
+  const marked = gameState.marked.flat().filter(Boolean).length;
+  document.getElementById('ws-called').textContent = gameState.calledNums.size;
+  document.getElementById('ws-marked').textContent = marked;
+  document.getElementById('win-screen').style.display = 'flex';
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BOARD (right panel — shows all 75 numbers with called state)
+// ═══════════════════════════════════════════════════════════════
+function renderBoard() {
+  const panel = document.getElementById('board-panel');
+  panel.innerHTML = '<div class="panel-title">📋 Board</div>';
+  const row = document.createElement('div');
+  row.style.cssText = 'display:flex;gap:4px;flex:1;';
+
+  LETTERS.forEach(l => {
+    const [lo, hi] = COL_RANGES[l];
+    const col = document.createElement('div');
+    col.className = 'board-col';
+    col.style.flex = '1';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'board-col-hdr';
+    hdr.style.color = COL_COLORS[l];
+    hdr.textContent = l;
+    col.appendChild(hdr);
+
+    for (let n = lo; n <= hi; n++) {
+      const d = document.createElement('div');
+      d.className = 'board-num';
+      d.id = `bn-${n}`;
+      d.textContent = n;
+      col.appendChild(d);
+    }
+    row.appendChild(col);
+  });
+  panel.appendChild(row);
+}
+
+function updateBoard(num) {
+  const el = document.getElementById(`bn-${num}`);
+  if (!el) return;
+  const l = numToLetter(num);
+  el.classList.add('called');
+  el.style.background = COL_COLORS[l];
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RECENT CALLS
+// ═══════════════════════════════════════════════════════════════
+function renderRecentCalls() {
+  const list = document.getElementById('recent-list');
+  const calls = gameState.callOrder.slice(0, gameState.callIndex).slice(-20).reverse();
+  list.innerHTML = calls.map(n => {
+    const l = numToLetter(n);
+    return `<div class="rcall" style="background:${COL_COLORS[l]};font-size:11px;">${l}${n}</div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════════
+// HUD
+// ═══════════════════════════════════════════════════════════════
+function updateHUD() {
+  document.getElementById('hud-called').textContent =
+    `${gameState.calledNums.size} / 75`;
+  const marked = gameState.marked.flat().filter(Boolean).length;
+  document.getElementById('hud-marked').textContent = `${marked} / 25`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TOAST (same idea as NetQuest dialogue feedback)
+// ═══════════════════════════════════════════════════════════════
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// KEYBOARD SUPPORT (Space / Enter to call next)
+// ═══════════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' || e.key === 'Enter') {
+    const btn = document.getElementById('call-btn');
+    if (btn && !btn.disabled &&
+        document.getElementById('game-wrapper').style.display !== 'none' &&
+        document.getElementById('win-screen').style.display === 'none') {
+      callNext();
+      e.preventDefault();
+    }
+  }
+});
+
+// ═══════════════════════════════════════════════════════════════
+// BUTTON WIRING (explicit — no inline onclick)
+// ═══════════════════════════════════════════════════════════════
+document.getElementById('startBtn').addEventListener('click', () => {
+  document.getElementById('title-screen').style.display = 'none';
+  document.getElementById('game-wrapper').style.display = 'flex';
+  initGame();
+});
+
+document.getElementById('call-btn').addEventListener('click', callNext);
+
+document.getElementById('playAgainBtn').addEventListener('click', () => {
+  document.getElementById('win-screen').style.display = 'none';
+  initGame();
+});
+
+document.getElementById('keepGoingBtn').addEventListener('click', () => {
+  gameState.hasBingo = false; // allow continued play
+  document.getElementById('win-screen').style.display = 'none';
+  showToast('Keep going — playing for coverall! 🎱');
+});
+</script>
+</body>
+</html>
