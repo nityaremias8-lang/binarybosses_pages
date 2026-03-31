@@ -6,7 +6,7 @@ export const baseurl = "{{ site.baseurl }}";
 
 export var pythonURI;
 if (location.hostname === "localhost" || location.hostname === "127.0.0.1") {
-    pythonURI = "http://localhost:8676";  // Same URI for localhost or 127.0.0.1
+    pythonURI = "http://localhost:8376";  // Same URI for localhost or 127.0.0.1
 } else {
     pythonURI = "https://flask.opencodingsociety.com";
 
