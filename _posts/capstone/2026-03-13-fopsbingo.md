@@ -868,8 +868,10 @@ function showToast(msg){
 }
 
 document.getElementById('startBtn').addEventListener('click',()=>{
+  window.switchTab('game');
   document.getElementById('title-screen').style.display='none';
   document.getElementById('game-wrapper').style.display='flex';
+  document.getElementById('win-screen').style.display='none';
   initGame();
 });
 document.getElementById('call-btn').addEventListener('click',callNext);
