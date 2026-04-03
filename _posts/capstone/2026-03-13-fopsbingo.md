@@ -627,6 +627,14 @@ permalink: /fopsbingo/
 
 </div>
 
+<script type="importmap">
+  {
+    "imports": {
+      "@api/config": "{{ site.baseurl }}/assets/js/api/config.js"
+    }
+  }
+</script>
+
 <script type="module">
   import { pythonURI, fetchOptions } from '@api/config';
 
