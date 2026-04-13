@@ -341,17 +341,20 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
             Events <span class="fops-chevron">▼</span>
           </button>
           <div class="fops-dropdown-panel">
-            <a href="/fopsshop/" class="fops-dp-item">
+            <a href="/binarybosses_pages/fopsshop/" class="fops-dp-item">
               <div class="fops-dp-icon">🛍️</div> ReRuns Shoppe
             </a>
-            <a href="/fopsbingo/" class="fops-dp-item">
+            <a href="/binarybosses_pages/fopsbingo/" class="fops-dp-item">
               <div class="fops-dp-icon">🎱</div> BINGO
             </a>
-            <a href="/fopslunch/" class="fops-dp-item">
+            <a href="/binarybosses_pages//fopslunch/" class="fops-dp-item">
               <div class="fops-dp-icon">🍽️</div> Social Lunch
             </a>
-            <a href="/fopsbday/" class="fops-dp-item">
+            <a href="/binarybosses_pages//fopsbday/" class="fops-dp-item">
               <div class="fops-dp-icon">🎂</div> Birthday Certificate
+            </a>
+            <a href="/fopspredictor/" class="fops-dp-item">
+          <div class="fops-dp-icon">🤖</div> Event Predictor
             </a>
           </div>
         </div>
