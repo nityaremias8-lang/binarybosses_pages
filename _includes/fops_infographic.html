@@ -1,39 +1,37 @@
 {% assign data = site.data.fops_infographic %}
 
 <div class="fops-infographic">
-  <!-- Header Section with Organization Link -->
+  <!-- Header -->
   <div class="infographic-header">
     <div class="header-content">
       <span class="status-badge">{{ data.topics[0].status }}</span>
       <h1 class="infographic-title">{{ data.title }}</h1>
       <p class="infographic-description">{{ data.description }}</p>
-      <!-- New Organization Button -->
       <a href="https://www.friendsofpowayseniors.org" class="org-button" target="_blank" rel="noopener noreferrer">
         Visit Friends of Poway Seniors →
       </a>
     </div>
   </div>
 
-  <!-- Main Topic Card -->
   {% assign topic = data.topics[0] %}
+
+  <!-- Main Topic Card -->
   <div class="topic-card">
     <div class="topic-grid">
-      <!-- Left Column: Image and Basic Info -->
       <div class="topic-left">
         <div class="image-wrapper">
-         <img src="{{ site.baseurl }}/images/capstone/fops.png" alt="Friends of Poway Seniors infographic visual" class="topic-image">
+          <img src="{{ site.baseurl }}/images/capstone/fops.png" alt="Friends of Poway Seniors infographic visual" class="topic-image">
+        </div>
         <h2 class="topic-title">{{ topic.title }}</h2>
         <p class="topic-subtitle">{{ topic.subtitle }}</p>
         <a href="{{ topic.link }}" class="view-plan-btn">View Full Plan →</a>
       </div>
-
-      <!-- Right Column: Description -->
       <div class="topic-right">
         <p class="topic-description">{{ topic.description }}</p>
       </div>
     </div>
 
-    <!-- Key Points Grid -->
+    <!-- Key Improvements -->
     <div class="key-points-section">
       <h3 class="section-title">🔧 Key Improvements</h3>
       <div class="points-grid">
@@ -46,9 +44,8 @@
       </div>
     </div>
 
-    <!-- Tech Stack & Impact Split -->
+    <!-- Tech Stack & Impact -->
     <div class="features-impact-grid">
-      <!-- Tech Stack -->
       <div class="tech-section">
         <h3 class="section-title">🛠️ Technologies & Features</h3>
         <div class="tech-tags">
@@ -57,8 +54,6 @@
           {% endfor %}
         </div>
       </div>
-
-      <!-- Impact -->
       <div class="impact-section">
         <h3 class="section-title">✨ Impact</h3>
         <ul class="impact-list">
@@ -69,7 +64,7 @@
       </div>
     </div>
 
-    <!-- Team Footer -->
+    <!-- Team -->
     <div class="team-footer">
       <span class="team-label">Team:</span>
       <div class="team-members">
@@ -80,52 +75,80 @@
     </div>
   </div>
 
-  <!-- Meal Tracker Feature Spotlight -->
+  <!-- Platform Features Spotlight -->
   <div class="feature-spotlight">
     <div class="spotlight-content">
-      <span class="feature-badge">✨ New Feature</span>
-      <h3>Senior Meal Tracker</h3>
-      <p>A simple, accessible way for seniors to log daily meals and share nutrition data with caregivers or family members.</p>
-      
+      <span class="feature-badge">🚀 Platform Features</span>
+      <h3>Smart Features Coming to FOPS</h3>
+      <p>We're building an intelligent, engaging platform to better serve Poway seniors and volunteers.</p>
+
       <div class="tracker-preview">
-        <div class="tracker-day">
-          <span class="day-label">Today's Log</span>
-          <div class="meal-item">
-            <span class="meal-name">Breakfast:</span>
-            <span class="meal-value">Oatmeal, berries, tea</span>
-          </div>
-          <div class="meal-item">
-            <span class="meal-name">Lunch:</span>
-            <span class="meal-value">Grilled chicken salad</span>
-          </div>
-          <div class="meal-item">
-            <span class="meal-name">Dinner:</span>
-            <span class="meal-value">Salmon, roasted vegetables</span>
-          </div>
-          <div class="meal-item">
-            <span class="meal-name">Snacks:</span>
-            <span class="meal-value">Apple, yogurt</span>
+
+        <div class="feature-item">
+          <div class="feature-icon">🤖</div>
+          <div class="feature-details">
+            <span class="feature-name">AI Chatbot</span>
+            <span class="feature-desc">24/7 virtual assistant to answer questions, provide resources, and guide seniors through services</span>
+            <span class="feature-status available">✓ Already Available</span>
           </div>
         </div>
-        <div class="tracker-stats">
-          <div class="stat">
-            <span class="stat-value">1,850</span>
-            <span class="stat-label">Calories</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value">68g</span>
-            <span class="stat-label">Protein</span>
-          </div>
-          <div class="stat">
-            <span class="stat-value">🔔</span>
-            <span class="stat-label">Reminder set for 6pm</span>
+
+        <div class="feature-item">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-details">
+            <span class="feature-name">Machine Learning</span>
+            <span class="feature-desc">Personalized content recommendations and intelligent matching between seniors and volunteers</span>
+            <span class="feature-status in-progress">⚙️ In Development</span>
           </div>
         </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🙋</div>
+          <div class="feature-details">
+            <span class="feature-name">Volunteer Signup Portal</span>
+            <span class="feature-desc">Easy online registration, schedule management, and opportunity matching for volunteers</span>
+            <span class="feature-status available">✓ Already Available</span>
+          </div>
+        </div>
+
+        <div class="feature-item">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-details">
+            <span class="feature-name">Gamification</span>
+            <span class="feature-desc">Points, badges, and achievements to make engagement fun and rewarding for all users</span>
+            <span class="feature-status in-progress">⚙️ Coming Soon</span>
+          </div>
+        </div>
+
+        <!-- Event Predictor -->
+        <div class="feature-item feature-item--highlight">
+          <div class="feature-icon">📊</div>
+          <div class="feature-details">
+            <span class="feature-name">
+              Event Predictor
+              <span class="feature-new-badge">New</span>
+            </span>
+            <span class="feature-desc">AI-powered forecasting so FOPS always has the right people and the right amount of food — before the day of the event.</span>
+            <div class="predictor-tiles">
+              <div class="predictor-tile">
+                <span class="predictor-tile-icon">🙌</span>
+                <span class="predictor-tile-label">Volunteer needs</span>
+                <span class="predictor-tile-desc">Predicts how many volunteers are needed per event based on type, size, and historical turnout</span>
+              </div>
+              <div class="predictor-tile">
+                <span class="predictor-tile-icon">🍽️</span>
+                <span class="predictor-tile-label">Food needs</span>
+                <span class="predictor-tile-desc">Forecasts meal quantities and dietary requirements to reduce waste and prevent shortages</span>
+              </div>
+            </div>
+            <span class="feature-status in-progress">⚙️ In Development</span>
+          </div>
+        </div>
+
       </div>
-      
-      <p class="spotlight-note">Caregivers can receive weekly nutrition reports and get alerts if a senior forgets to log meals.</p>
-      
-      <!-- Secondary Button (optional - at bottom of spotlight) -->
+
+      <p class="spotlight-note">Our goal is to create an interactive, engaging platform that makes staying connected with FOPS both easy and enjoyable.</p>
+
       <div class="spotlight-footer">
         <a href="https://www.friendsofpowayseniors.org" class="spotlight-button" target="_blank" rel="noopener noreferrer">
           Learn More About FOPS
