@@ -380,7 +380,7 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
       <div class="fops-menu">
         <a href="/fops/" class="fops-nav-link">Home</a>
         <div class="fops-dropdown" id="eventsDropdown">
-          <button class="fops-nav-link" onclick="toggleDropdown(event)">
+          <button class="fops-nav-link" onclick="window.toggleDropdown(event)">
             Events <span class="fops-chevron">▼</span>
           </button>
           <div class="fops-dropdown-panel">
@@ -433,7 +433,7 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
         </div>
         <input type="file" id="csv-file-input" accept=".csv"/>
 
-        <button id="train-btn" onclick="trainModel()" disabled
+        <button id="train-btn" onclick="window.trainModel()" disabled
           style="width:100%;padding:0.75rem;background:rgba(255,255,255,0.1);color:#fff;border:1.5px solid rgba(255,255,255,0.2);border-radius:12px;font-family:'DM Sans',sans-serif;font-size:0.95rem;font-weight:600;cursor:pointer;transition:all 0.2s;">
           Train Model
         </button>
@@ -526,7 +526,7 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
           </label>
         </div>
 
-        <button id="predict-btn" onclick="runPredict()" disabled>Predict Attendance →</button>
+        <button id="predict-btn" onclick="window.runPredict()" disabled>Predict Attendance →</button>
       </div>
     </div>
 
@@ -573,279 +573,337 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   </footer>
 </div>
 
-<!-- ═══════════════════════════════════════════════════════════════════
-     INLINED MODEL (model.js — no external import needed)
-════════════════════════════════════════════════════════════════════ -->
 <script>
-// ── Feature encoding ─────────────────────────────────────────────────────────
-const FEATURE_NAMES = [
-  'month','day_of_week','event_type_encoded','weather_encoded',
-  'holiday_week','prior_week_attendance','members_notified','flyer_sent','season_encoded'
-];
-const EVENT_MAP   = { bingo:0, social_lunch:1, birthday_certificate:2, reruns_shoppe:3 };
-const WEATHER_MAP = { sunny:2, cloudy:1, rainy:0 };
-const SEASON_MAP  = { winter:0, spring:1, summer:2, fall:3 };
+// ============================================================
+// COMPLETE MODEL CODE - ALL FUNCTIONS ARE GLOBALLY ACCESSIBLE
+// ============================================================
 
-function encodeFeatures(r) {
-  return [
-    Number(r.month), Number(r.day_of_week),
-    EVENT_MAP[r.event_type] ?? 0,
-    WEATHER_MAP[r.weather] ?? 1,
-    Number(r.holiday_week),
-    Number(r.prior_week_attendance),
-    Number(r.members_notified),
-    Number(r.flyer_sent),
-    SEASON_MAP[r.season] ?? 0,
+(function() {
+  // Feature configuration
+  const FEATURE_NAMES = [
+    'month','day_of_week','event_type_encoded','weather_encoded',
+    'holiday_week','prior_week_attendance','members_notified','flyer_sent','season_encoded'
   ];
-}
+  
+  const EVENT_MAP = { bingo: 0, social_lunch: 1, birthday_certificate: 2, reruns_shoppe: 3 };
+  const WEATHER_MAP = { sunny: 2, cloudy: 1, rainy: 0 };
+  const SEASON_MAP = { winter: 0, spring: 1, summer: 2, fall: 3 };
 
-function parseCSV(csvText) {
-  const lines = csvText.trim().split('\n');
-  const headers = lines[0].split(',').map(h => h.trim());
-  return lines.slice(1).map(line => {
-    const vals = line.split(',').map(v => v.trim());
-    const obj = {};
-    headers.forEach((h, i) => { obj[h] = vals[i]; });
-    return obj;
-  });
-}
-
-// ── Decision Tree ─────────────────────────────────────────────────────────────
-class DecisionNode {
-  constructor({ featureIndex=null, threshold=null, left=null, right=null, value=null }={}) {
-    this.featureIndex=featureIndex; this.threshold=threshold;
-    this.left=left; this.right=right; this.value=value;
+  function encodeFeatures(r) {
+    return [
+      Number(r.month), Number(r.day_of_week),
+      EVENT_MAP[r.event_type] ?? 0,
+      WEATHER_MAP[r.weather] ?? 1,
+      Number(r.holiday_week),
+      Number(r.prior_week_attendance),
+      Number(r.members_notified),
+      Number(r.flyer_sent),
+      SEASON_MAP[r.season] ?? 0,
+    ];
   }
-  isLeaf() { return this.value !== null; }
-}
 
-function mse(values) {
-  if (!values.length) return 0;
-  const mean = values.reduce((a,b)=>a+b,0)/values.length;
-  return values.reduce((s,v)=>s+(v-mean)**2,0)/values.length;
-}
-
-function bestSplit(X, y, featureIndices) {
-  let bestGain=-Infinity, bestFi=null, bestThresh=null;
-  const parentMse = mse(y);
-  for (const fi of featureIndices) {
-    const vals = [...new Set(X.map(r=>r[fi]))].sort((a,b)=>a-b);
-    for (let i=0; i<vals.length-1; i++) {
-      const thresh = (vals[i]+vals[i+1])/2;
-      const leftY  = y.filter((_,k)=>X[k][fi]<=thresh);
-      const rightY = y.filter((_,k)=>X[k][fi]>thresh);
-      if (!leftY.length||!rightY.length) continue;
-      const gain = parentMse-(leftY.length/y.length)*mse(leftY)-(rightY.length/y.length)*mse(rightY);
-      if (gain>bestGain) { bestGain=gain; bestFi=fi; bestThresh=thresh; }
-    }
-  }
-  return { featureIndex:bestFi, threshold:bestThresh, gain:bestGain };
-}
-
-function buildTree(X, y, depth, maxDepth, minSamples, nFeatures) {
-  if (depth>=maxDepth||y.length<=minSamples||new Set(y).size===1)
-    return new DecisionNode({ value: y.reduce((a,b)=>a+b,0)/y.length });
-  const allIdx = Array.from({length:X[0].length},(_,i)=>i);
-  const featureIndices = allIdx.sort(()=>Math.random()-0.5).slice(0,nFeatures);
-  const { featureIndex, threshold, gain } = bestSplit(X, y, featureIndices);
-  if (featureIndex===null||gain<=0)
-    return new DecisionNode({ value: y.reduce((a,b)=>a+b,0)/y.length });
-  const leftMask  = X.map((r,i)=>r[featureIndex]<=threshold?i:-1).filter(i=>i>=0);
-  const rightMask = X.map((r,i)=>r[featureIndex]>threshold?i:-1).filter(i=>i>=0);
-  return new DecisionNode({
-    featureIndex, threshold,
-    left:  buildTree(leftMask.map(i=>X[i]),  leftMask.map(i=>y[i]),  depth+1,maxDepth,minSamples,nFeatures),
-    right: buildTree(rightMask.map(i=>X[i]), rightMask.map(i=>y[i]), depth+1,maxDepth,minSamples,nFeatures),
-  });
-}
-
-function predictTree(node, x) {
-  if (node.isLeaf()) return node.value;
-  return x[node.featureIndex]<=node.threshold ? predictTree(node.left,x) : predictTree(node.right,x);
-}
-
-// ── Random Forest ─────────────────────────────────────────────────────────────
-class RandomForest {
-  constructor({ nTrees=50, maxDepth=8, minSamples=3 }={}) {
-    this.nTrees=nTrees; this.maxDepth=maxDepth; this.minSamples=minSamples; this.trees=[];
-  }
-  fit(X, y) {
-    this.trees=[];
-    const nFeatures=Math.max(1,Math.round(Math.sqrt(X[0].length)));
-    for (let t=0;t<this.nTrees;t++) {
-      const indices=Array.from({length:X.length},()=>Math.floor(Math.random()*X.length));
-      this.trees.push(buildTree(indices.map(i=>X[i]), indices.map(i=>y[i]), 0,this.maxDepth,this.minSamples,nFeatures));
-    }
-    return this;
-  }
-  predict(X) { return X.map(x=>{ const v=this.trees.map(t=>predictTree(t,x)); return v.reduce((a,b)=>a+b,0)/v.length; }); }
-  predictOne(x) { return this.predict([x])[0]; }
-  featureImportance(X, y) {
-    const n=FEATURE_NAMES.length, importance=new Array(n).fill(0);
-    const baseScore=mse(y.map((_,i)=>this.predictOne(X[i])-y[i]));
-    for (let fi=0;fi<n;fi++) {
-      const shuffled=X.map(r=>[...r]);
-      const col=shuffled.map(r=>r[fi]).sort(()=>Math.random()-0.5);
-      shuffled.forEach((r,i)=>{r[fi]=col[i];});
-      importance[fi]=Math.max(0,mse(shuffled.map((r,i)=>this.predictOne(r)-y[i]))-baseScore);
-    }
-    const total=importance.reduce((a,b)=>a+b,0)||1;
-    return importance.map(v=>v/total);
-  }
-}
-
-// ── POWModel ──────────────────────────────────────────────────────────────────
-class POWModel {
-  constructor() { this.forest=new RandomForest({nTrees:60,maxDepth:8,minSamples:3}); this.trained=false; this.trainStats=null; }
-  train(records) {
-    if (!records.length) throw new Error('No training records');
-    const X=records.map(r=>encodeFeatures(r));
-    const y=records.map(r=>Number(r.attendance));
-    this.forest.fit(X,y);
-    this.trained=true;
-    const preds=this.forest.predict(X), n=y.length;
-    const errors=preds.map((p,i)=>p-y[i]);
-    const mae=errors.reduce((s,e)=>s+Math.abs(e),0)/n;
-    const rmse=Math.sqrt(errors.reduce((s,e)=>s+e*e,0)/n);
-    const yMean=y.reduce((a,b)=>a+b,0)/n;
-    const ssTot=y.reduce((s,v)=>s+(v-yMean)**2,0);
-    const r2=1-errors.reduce((s,e)=>s+e*e,0)/ssTot;
-    this.featureImportances=this.forest.featureImportance(X,y);
-    this.trainStats={ rmse:+rmse.toFixed(2), mae:+mae.toFixed(2), r2:+r2.toFixed(4), sampleCount:n };
-    return this.trainStats;
-  }
-  predict(record) {
-    if (!this.trained) throw new Error('Model not trained');
-    const raw=this.forest.predictOne(encodeFeatures(record));
-    const margin=this.trainStats?.rmse??5;
-    return { predicted:Math.round(raw), low:Math.max(0,Math.round(raw-margin)), high:Math.round(raw+margin) };
-  }
-}
-
-// ── UI Logic ──────────────────────────────────────────────────────────────────
-const model = new POWModel();
-let csvRecords = null;
-
-function setStatus(type, msg) {
-  document.getElementById('status-dot').className = 'status-dot ' + type;
-  document.getElementById('status-text').textContent = msg;
-}
-
-// CSV upload
-const uploadArea = document.getElementById('upload-area');
-const csvInput   = document.getElementById('csv-file-input');
-
-uploadArea.addEventListener('dragover', e=>{ e.preventDefault(); uploadArea.classList.add('drag-over'); });
-uploadArea.addEventListener('dragleave', ()=>uploadArea.classList.remove('drag-over'));
-uploadArea.addEventListener('drop', e=>{ e.preventDefault(); uploadArea.classList.remove('drag-over'); handleFile(e.dataTransfer.files[0]); });
-csvInput.addEventListener('change', ()=>handleFile(csvInput.files[0]));
-
-function handleFile(file) {
-  if (!file) return;
-  document.getElementById('upload-filename').textContent = '📎 ' + file.name;
-  const reader = new FileReader();
-  reader.onload = e => {
-    try {
-      csvRecords = parseCSV(e.target.result);
-      document.getElementById('train-btn').disabled = false;
-      setStatus('loading', `CSV loaded: ${csvRecords.length} records. Click "Train Model" to continue.`);
-    } catch(err) {
-      setStatus('error', 'Could not parse CSV. Check the format and try again.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-function trainModel() {
-  if (!csvRecords) return;
-  const btn = document.getElementById('train-btn');
-  btn.textContent = 'Training…'; btn.disabled = true;
-  setStatus('loading', 'Training the random forest — this may take a moment…');
-
-  // Yield to browser so status renders, then train
-  setTimeout(() => {
-    try {
-      const stats = model.train(csvRecords);
-      document.getElementById('stat-r2').textContent   = stats.r2.toFixed(2);
-      document.getElementById('stat-mae').textContent  = stats.mae;
-      document.getElementById('stat-rmse').textContent = stats.rmse;
-      document.getElementById('train-stats').style.display = 'grid';
-      document.getElementById('predict-btn').disabled = false;
-      btn.textContent = '✓ Re-train Model'; btn.disabled = false;
-      btn.style.background = 'rgba(93,187,125,0.2)';
-      btn.style.borderColor = 'rgba(93,187,125,0.5)';
-      setStatus('ready', `Model trained on ${stats.sampleCount} records. R² = ${stats.r2.toFixed(3)} · RMSE = ${stats.rmse}. Ready to predict!`);
-    } catch(err) {
-      setStatus('error', 'Training failed: ' + err.message);
-      btn.textContent = 'Train Model'; btn.disabled = false;
-    }
-  }, 80);
-}
-
-function runPredict() {
-  const record = {
-    event_type:             document.getElementById('f-event-type').value,
-    month:                  document.getElementById('f-month').value,
-    day_of_week:            document.getElementById('f-day-of-week').value,
-    season:                 document.getElementById('f-season').value,
-    weather:                document.getElementById('f-weather').value,
-    prior_week_attendance:  document.getElementById('f-prior').value,
-    members_notified:       document.getElementById('f-notified').value,
-    holiday_week:           document.getElementById('f-holiday').checked ? 1 : 0,
-    flyer_sent:             document.getElementById('f-flyer').checked ? 1 : 0,
-  };
-
-  try {
-    const { predicted, low, high } = model.predict(record);
-
-    document.getElementById('result-number').textContent = predicted;
-    document.getElementById('result-range').textContent  = `Estimated range: ${low} – ${high} attendees`;
-
-    // Confidence: narrower range = more confident
-    const spread = high - low;
-    const conf   = Math.max(0, Math.min(100, Math.round(100 - spread * 2)));
-    document.getElementById('conf-bar').style.width = conf + '%';
-    document.getElementById('conf-label').textContent = conf + '% confidence';
-
-    // Feature importance bars
-    const impDiv = document.getElementById('importance-bars');
-    impDiv.innerHTML = '';
-    const imp = model.featureImportances || [];
-    const labels = {
-      month:'Month', day_of_week:'Day of Week', event_type_encoded:'Event Type',
-      weather_encoded:'Weather', holiday_week:'Holiday Week',
-      prior_week_attendance:'Prior Attendance', members_notified:'Members Notified',
-      flyer_sent:'Flyer Sent', season_encoded:'Season'
-    };
-    FEATURE_NAMES.forEach((name, i) => {
-      const pct = imp[i] ? (imp[i]*100).toFixed(1) : '0.0';
-      impDiv.innerHTML += `
-        <div class="imp-row">
-          <div class="imp-name">${labels[name]||name}</div>
-          <div class="imp-bar-wrap"><div class="imp-bar-fill" style="width:${pct}%"></div></div>
-          <div class="imp-pct">${pct}%</div>
-        </div>`;
+  function parseCSV(csvText) {
+    const lines = csvText.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    return lines.slice(1).map(line => {
+      const vals = line.split(',').map(v => v.trim());
+      const obj = {};
+      headers.forEach((h, i) => { obj[h] = vals[i]; });
+      return obj;
     });
-
-    document.getElementById('result-placeholder').style.display = 'none';
-    const rc = document.getElementById('result-card');
-    rc.classList.add('visible');
-
-  } catch(err) {
-    setStatus('error', 'Prediction error: ' + err.message);
   }
-}
 
-// Nav dropdown
-function toggleDropdown(e) {
-  e.stopPropagation();
-  document.getElementById('eventsDropdown').classList.toggle('open');
-}
-document.addEventListener('click', e=>{
-  const dd=document.getElementById('eventsDropdown');
-  if (dd&&!dd.contains(e.target)) dd.classList.remove('open');
-});
+  // Decision Tree
+  class DecisionNode {
+    constructor({ featureIndex = null, threshold = null, left = null, right = null, value = null } = {}) {
+      this.featureIndex = featureIndex;
+      this.threshold = threshold;
+      this.left = left;
+      this.right = right;
+      this.value = value;
+    }
+    isLeaf() { return this.value !== null; }
+  }
+
+  function mse(values) {
+    if (!values.length) return 0;
+    const mean = values.reduce((a, b) => a + b, 0) / values.length;
+    return values.reduce((s, v) => s + (v - mean) ** 2, 0) / values.length;
+  }
+
+  function bestSplit(X, y, featureIndices) {
+    let bestGain = -Infinity, bestFi = null, bestThresh = null;
+    const parentMse = mse(y);
+    for (const fi of featureIndices) {
+      const vals = [...new Set(X.map(r => r[fi]))].sort((a, b) => a - b);
+      for (let i = 0; i < vals.length - 1; i++) {
+        const thresh = (vals[i] + vals[i + 1]) / 2;
+        const leftY = y.filter((_, k) => X[k][fi] <= thresh);
+        const rightY = y.filter((_, k) => X[k][fi] > thresh);
+        if (!leftY.length || !rightY.length) continue;
+        const gain = parentMse - (leftY.length / y.length) * mse(leftY) - (rightY.length / y.length) * mse(rightY);
+        if (gain > bestGain) { bestGain = gain; bestFi = fi; bestThresh = thresh; }
+      }
+    }
+    return { featureIndex: bestFi, threshold: bestThresh, gain: bestGain };
+  }
+
+  function buildTree(X, y, depth, maxDepth, minSamples, nFeatures) {
+    if (depth >= maxDepth || y.length <= minSamples || new Set(y).size === 1) {
+      return new DecisionNode({ value: y.reduce((a, b) => a + b, 0) / y.length });
+    }
+    const allIdx = Array.from({ length: X[0].length }, (_, i) => i);
+    const featureIndices = allIdx.sort(() => Math.random() - 0.5).slice(0, nFeatures);
+    const { featureIndex, threshold, gain } = bestSplit(X, y, featureIndices);
+    if (featureIndex === null || gain <= 0) {
+      return new DecisionNode({ value: y.reduce((a, b) => a + b, 0) / y.length });
+    }
+    const leftMask = X.map((r, i) => r[featureIndex] <= threshold ? i : -1).filter(i => i >= 0);
+    const rightMask = X.map((r, i) => r[featureIndex] > threshold ? i : -1).filter(i => i >= 0);
+    return new DecisionNode({
+      featureIndex, threshold,
+      left: buildTree(leftMask.map(i => X[i]), leftMask.map(i => y[i]), depth + 1, maxDepth, minSamples, nFeatures),
+      right: buildTree(rightMask.map(i => X[i]), rightMask.map(i => y[i]), depth + 1, maxDepth, minSamples, nFeatures),
+    });
+  }
+
+  function predictTree(node, x) {
+    if (node.isLeaf()) return node.value;
+    return x[node.featureIndex] <= node.threshold ? predictTree(node.left, x) : predictTree(node.right, x);
+  }
+
+  // Random Forest
+  class RandomForest {
+    constructor({ nTrees = 50, maxDepth = 8, minSamples = 3 } = {}) {
+      this.nTrees = nTrees;
+      this.maxDepth = maxDepth;
+      this.minSamples = minSamples;
+      this.trees = [];
+    }
+    fit(X, y) {
+      this.trees = [];
+      const nFeatures = Math.max(1, Math.round(Math.sqrt(X[0].length)));
+      for (let t = 0; t < this.nTrees; t++) {
+        const indices = Array.from({ length: X.length }, () => Math.floor(Math.random() * X.length));
+        this.trees.push(buildTree(indices.map(i => X[i]), indices.map(i => y[i]), 0, this.maxDepth, this.minSamples, nFeatures));
+      }
+      return this;
+    }
+    predict(X) {
+      return X.map(x => {
+        const v = this.trees.map(t => predictTree(t, x));
+        return v.reduce((a, b) => a + b, 0) / v.length;
+      });
+    }
+    predictOne(x) { return this.predict([x])[0]; }
+    featureImportance(X, y) {
+      const n = FEATURE_NAMES.length, importance = new Array(n).fill(0);
+      const preds = this.predict(X);
+      const baseScore = mse(preds.map((p, i) => p - y[i]));
+      for (let fi = 0; fi < n; fi++) {
+        const shuffled = X.map(r => [...r]);
+        const col = shuffled.map(r => r[fi]).sort(() => Math.random() - 0.5);
+        shuffled.forEach((r, i) => { r[fi] = col[i]; });
+        const permScore = mse(this.predict(shuffled).map((p, i) => p - y[i]));
+        importance[fi] = Math.max(0, permScore - baseScore);
+      }
+      const total = importance.reduce((a, b) => a + b, 0) || 1;
+      return importance.map(v => v / total);
+    }
+  }
+
+  // POW Model
+  class POWModel {
+    constructor() {
+      this.forest = new RandomForest({ nTrees: 60, maxDepth: 8, minSamples: 3 });
+      this.trained = false;
+      this.trainStats = null;
+      this.featureImportances = null;
+    }
+    train(records) {
+      if (!records.length) throw new Error('No training records');
+      const X = records.map(r => encodeFeatures(r));
+      const y = records.map(r => Number(r.attendance));
+      this.forest.fit(X, y);
+      this.trained = true;
+      const preds = this.forest.predict(X);
+      const n = y.length;
+      const errors = preds.map((p, i) => p - y[i]);
+      const mae = errors.reduce((s, e) => s + Math.abs(e), 0) / n;
+      const rmse = Math.sqrt(errors.reduce((s, e) => s + e * e, 0) / n);
+      const yMean = y.reduce((a, b) => a + b, 0) / n;
+      const ssTot = y.reduce((s, v) => s + (v - yMean) ** 2, 0);
+      const ssRes = errors.reduce((s, e) => s + e * e, 0);
+      const r2 = 1 - ssRes / ssTot;
+      this.featureImportances = this.forest.featureImportance(X, y);
+      this.trainStats = { rmse: +rmse.toFixed(2), mae: +mae.toFixed(2), r2: +r2.toFixed(4), sampleCount: n };
+      return this.trainStats;
+    }
+    predict(record) {
+      if (!this.trained) throw new Error('Model not trained yet');
+      const raw = this.forest.predictOne(encodeFeatures(record));
+      const margin = this.trainStats?.rmse ?? 5;
+      return {
+        predicted: Math.round(raw),
+        low: Math.max(0, Math.round(raw - margin)),
+        high: Math.round(raw + margin),
+      };
+    }
+  }
+
+  // ============================================================
+  // UI CONTROLLER
+  // ============================================================
+  const model = new POWModel();
+  let csvRecords = null;
+
+  // Helper: update status banner
+  function setStatus(type, msg) {
+    const dot = document.getElementById('status-dot');
+    const text = document.getElementById('status-text');
+    dot.className = 'status-dot ' + type;
+    text.textContent = msg;
+  }
+
+  // Handle file upload
+  function handleFile(file) {
+    if (!file) return;
+    document.getElementById('upload-filename').textContent = '📎 ' + file.name;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        csvRecords = parseCSV(e.target.result);
+        const trainBtn = document.getElementById('train-btn');
+        trainBtn.disabled = false;
+        trainBtn.style.background = 'linear-gradient(135deg, var(--sage), var(--sage-dk))';
+        trainBtn.style.border = 'none';
+        setStatus('loading', 'CSV loaded: ' + csvRecords.length + ' records. Click "Train Model" to continue.');
+      } catch(err) {
+        setStatus('error', 'Could not parse CSV. Check the format and try again.');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Training function (global)
+  window.trainModel = function() {
+    if (!csvRecords) return;
+    const btn = document.getElementById('train-btn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Training...';
+    btn.disabled = true;
+    setStatus('loading', 'Training the random forest — this may take a moment...');
+
+    setTimeout(function() {
+      try {
+        const stats = model.train(csvRecords);
+        document.getElementById('stat-r2').textContent = stats.r2.toFixed(2);
+        document.getElementById('stat-mae').textContent = stats.mae;
+        document.getElementById('stat-rmse').textContent = stats.rmse;
+        document.getElementById('train-stats').style.display = 'grid';
+        document.getElementById('predict-btn').disabled = false;
+        btn.textContent = '✓ Re-train Model';
+        btn.disabled = false;
+        btn.style.background = 'rgba(93,187,125,0.2)';
+        btn.style.border = '1.5px solid rgba(93,187,125,0.5)';
+        setStatus('ready', 'Model trained on ' + stats.sampleCount + ' records. R² = ' + stats.r2.toFixed(3) + ' · RMSE = ' + stats.rmse + '. Ready to predict!');
+      } catch(err) {
+        setStatus('error', 'Training failed: ' + err.message);
+        btn.textContent = 'Train Model';
+        btn.disabled = false;
+        btn.style.background = 'linear-gradient(135deg, var(--sage), var(--sage-dk))';
+      }
+    }, 80);
+  };
+
+  // Prediction function (global)
+  window.runPredict = function() {
+    if (!model.trained) {
+      setStatus('error', 'Please train the model first by uploading a CSV and clicking "Train Model".');
+      return;
+    }
+
+    const record = {
+      event_type: document.getElementById('f-event-type').value,
+      month: document.getElementById('f-month').value,
+      day_of_week: document.getElementById('f-day-of-week').value,
+      season: document.getElementById('f-season').value,
+      weather: document.getElementById('f-weather').value,
+      prior_week_attendance: document.getElementById('f-prior').value,
+      members_notified: document.getElementById('f-notified').value,
+      holiday_week: document.getElementById('f-holiday').checked ? 1 : 0,
+      flyer_sent: document.getElementById('f-flyer').checked ? 1 : 0,
+    };
+
+    try {
+      const { predicted, low, high } = model.predict(record);
+      document.getElementById('result-number').textContent = predicted;
+      document.getElementById('result-range').textContent = 'Estimated range: ' + low + ' – ' + high + ' attendees';
+
+      const spread = high - low;
+      const conf = Math.max(0, Math.min(100, Math.round(100 - spread * 2)));
+      document.getElementById('conf-bar').style.width = conf + '%';
+      document.getElementById('conf-label').textContent = conf + '% confidence';
+
+      // Feature importance bars
+      const impDiv = document.getElementById('importance-bars');
+      impDiv.innerHTML = '';
+      const imp = model.featureImportances || [];
+      const labels = {
+        month: 'Month', day_of_week: 'Day of Week', event_type_encoded: 'Event Type',
+        weather_encoded: 'Weather', holiday_week: 'Holiday Week',
+        prior_week_attendance: 'Prior Attendance', members_notified: 'Members Notified',
+        flyer_sent: 'Flyer Sent', season_encoded: 'Season'
+      };
+      FEATURE_NAMES.forEach(function(name, i) {
+        const pct = imp[i] ? (imp[i] * 100).toFixed(1) : '0.0';
+        impDiv.innerHTML += '<div class="imp-row">' +
+          '<div class="imp-name">' + (labels[name] || name) + '</div>' +
+          '<div class="imp-bar-wrap"><div class="imp-bar-fill" style="width:' + pct + '%"></div></div>' +
+          '<div class="imp-pct">' + pct + '%</div>' +
+          '</div>';
+      });
+
+      document.getElementById('result-placeholder').style.display = 'none';
+      document.getElementById('result-card').classList.add('visible');
+      setStatus('ready', 'Prediction complete!');
+    } catch(err) {
+      setStatus('error', 'Prediction error: ' + err.message);
+    }
+  };
+
+  // Dropdown toggle (global)
+  window.toggleDropdown = function(e) {
+    e.stopPropagation();
+    document.getElementById('eventsDropdown').classList.toggle('open');
+  };
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function(e) {
+    const dd = document.getElementById('eventsDropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  });
+
+  // File upload handlers
+  const uploadArea = document.getElementById('upload-area');
+  const csvInput = document.getElementById('csv-file-input');
+
+  uploadArea.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    uploadArea.classList.add('drag-over');
+  });
+  uploadArea.addEventListener('dragleave', function() {
+    uploadArea.classList.remove('drag-over');
+  });
+  uploadArea.addEventListener('drop', function(e) {
+    e.preventDefault();
+    uploadArea.classList.remove('drag-over');
+    handleFile(e.dataTransfer.files[0]);
+  });
+  csvInput.addEventListener('change', function() {
+    handleFile(csvInput.files[0]);
+  });
+})();
 </script>
-
 </body>
 </html>

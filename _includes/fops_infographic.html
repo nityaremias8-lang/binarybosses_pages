@@ -7,9 +7,14 @@
       <span class="status-badge">{{ data.topics[0].status }}</span>
       <h1 class="infographic-title">{{ data.title }}</h1>
       <p class="infographic-description">{{ data.description }}</p>
-      <a href="https://www.friendsofpowayseniors.org" class="org-button" target="_blank" rel="noopener noreferrer">
-        Visit Friends of Poway Seniors →
-      </a>
+      <div class="header-buttons">
+        <a href="https://www.friendsofpowayseniors.org" class="org-button" target="_blank" rel="noopener noreferrer">
+          Visit Friends of Poway Seniors →
+        </a>
+        <a href="https://fops.opencodingsociety.com" class="org-button secondary" target="_blank" rel="noopener noreferrer">
+          View FOPS Open Coding Platform →
+        </a>
+      </div>
     </div>
   </div>
 
@@ -24,7 +29,7 @@
         </div>
         <h2 class="topic-title">{{ topic.title }}</h2>
         <p class="topic-subtitle">{{ topic.subtitle }}</p>
-        <a href="{{ topic.link }}" class="view-plan-btn">View Full Plan →</a>
+        <!-- "View Full Plan" button removed as requested -->
       </div>
       <div class="topic-right">
         <p class="topic-description">{{ topic.description }}</p>
