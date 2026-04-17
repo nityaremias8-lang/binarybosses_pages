@@ -1,6 +1,6 @@
 ---
 toc: false
-layout: post
+layout: none
 title: Friends of Poway Seniors
 description: Home — Friends of Poway Seniors
 permalink: /fops/
@@ -62,18 +62,6 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     height: 68px;
     display: flex; align-items: center; justify-content: flex-end; gap: 0.1rem;
   }
-    display: flex; align-items: center; gap: 10px;
-  }
-  .fops-logo-icon {
-    width: 38px; height: 38px; background: var(--sage); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 17px; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-  }
-  .fops-logo span {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.02rem; font-weight: 700; color: var(--white);
-  }
-
   .fops-menu { display: flex; align-items: center; gap: 0.1rem; }
 
   .fops-nav-link {
@@ -159,16 +147,6 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     max-width: 1000px; margin: 0 auto;
   }
 
-  .fops-hero-top-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(2.8rem, 7vw, 6rem);
-    font-weight: 700;
-    color: var(--white);
-    line-height: 1.1;
-    text-align: center;
-    margin-bottom: 1.25rem;
-  }
-
   .fops-badge {
     display: inline-flex; align-items: center; gap: 7px;
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
@@ -177,56 +155,19 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
     padding: 0.33rem 1rem; border-radius: 20px; margin-bottom: 2rem;
   }
 
-  /* Big title + image row */
-  .fops-title-row {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 2.5rem;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-  }
   .fops-big-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(3.2rem, 8vw, 7rem);
     font-weight: 700;
     color: var(--white);
     line-height: 1.05;
-    text-align: left;
+    text-align: center;
+    margin-bottom: 2rem;
   }
   .fops-big-title em {
     color: var(--gold-lt);
     font-style: italic;
     display: block;
-  }
-
-  /* ── LOGO IMAGE WITH WHITE CIRCLE ── */
-  .fops-hero-img-wrap {
-    position: relative;
-    width: clamp(260px, 32vw, 400px);
-    height: clamp(260px, 32vw, 400px);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .fops-hero-img-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: #ffffff;
-    border-radius: 50%;
-    box-shadow:
-      0 8px 40px rgba(0,0,0,0.20),
-      0 0 0 6px rgba(255,255,255,0.15);
-  }
-  .fops-hero-img {
-    position: relative;
-    z-index: 1;
-    width: 82%;
-    height: 82%;
-    object-fit: contain;
-    filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
   }
 
   .fops-hero-sub {
@@ -313,18 +254,12 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
 
   /* ── RESPONSIVE ── */
   @media (max-width: 700px) {
-    .fops-hero-top-title { font-size: clamp(2rem, 9vw, 3.5rem); }
-    .fops-title-row { flex-direction: column; gap: 1.5rem; }
-    .fops-big-title { text-align: center; font-size: clamp(2.8rem, 10vw, 4.5rem); }
+    .fops-big-title { font-size: clamp(2.8rem, 10vw, 4.5rem); }
     .fops-big-title em { display: inline; }
     .fops-mv-cards { grid-template-columns: 1fr; }
     .fops-nav-link { padding: 0.4rem 0.65rem; font-size: 0.83rem; }
     .fops-hero { padding: 4rem 1.25rem 3.5rem; }
     .fops-mv { padding: 3.5rem 1.25rem 5rem; }
-    .fops-hero-img-wrap {
-      width: clamp(200px, 60vw, 280px);
-      height: clamp(200px, 60vw, 280px);
-    }
   }
 </style>
 </head>
@@ -341,20 +276,20 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
             Events <span class="fops-chevron">▼</span>
           </button>
           <div class="fops-dropdown-panel">
-            <a href="/binarybosses_pages/fopsshop/" class="fops-dp-item">
+            <a href="/fopsshop/" class="fops-dp-itedm">
               <div class="fops-dp-icon">🛍️</div> ReRuns Shoppe
             </a>
-            <a href="/binarybosses_pages/fopsbingo/" class="fops-dp-item">
+            <a href="/fopsbingo/" class="fops-dp-item">
               <div class="fops-dp-icon">🎱</div> BINGO
             </a>
-            <a href="/binarybosses_pages//fopslunch/" class="fops-dp-item">
+            <a href="/fopslunchh/" class="fops-dp-item">
               <div class="fops-dp-icon">🍽️</div> Social Lunch
             </a>
-            <a href="/binarybosses_pages//fopsbday/" class="fops-dp-item">
+            <a href="/fopsbday/" class="fops-dp-item">
               <div class="fops-dp-icon">🎂</div> Birthday Certificate
             </a>
             <a href="/fopspredictor/" class="fops-dp-item">
-          <div class="fops-dp-icon">🤖</div> Event Predictor
+              <div class="fops-dp-icon">🤖</div> Event Predictor
             </a>
           </div>
         </div>
@@ -369,24 +304,13 @@ body, html { background: #2e5238 !important; margin: 0 !important; padding: 0 !i
   <!-- HERO -->
   <section class="fops-hero">
     <div class="fops-hero-inner">
-      <h1 class="fops-hero-top-title fu fu1">Friends of Poway Seniors</h1>
-      <div class="fops-badge fu fu2">🌿 Serving Poway Since 1974</div>
+      <div class="fops-badge fu fu1">🌿 Serving Poway Since 1974</div>
 
-      <!-- Big title + image side by side -->
-      <div class="fops-title-row fu fu3">
-        <h1 class="fops-big-title">
-          Friends of<br><em>Poway Seniors</em>
-        </h1>
-        <div class="fops-hero-img-wrap">
-          <img
-            src="/images/capstone/fops.png"
-            alt="Friends of Poway Seniors logo"
-            class="fops-hero-img"
-          />
-        </div>
-      </div>
+      <h1 class="fops-big-title fu fu2">
+        Friends of<br><em>Poway Seniors</em>
+      </h1>
 
-      <p class="fops-hero-sub fu fu4">
+      <p class="fops-hero-sub fu fu3">
         The Poway Valley Senior Citizens Corporation was formed in 1974 and it is still here today. We are no longer the Poway Senior Center — our mission and vision have changed, but our passion to positively impact lives has not wavered. Please join us on our new journey.
       </p>
     </div>
