@@ -1,6 +1,6 @@
 ---
 toc: false
-layout: post
+layout: none
 title: Bingo
 permalink: /fopsbingo/
 ---
