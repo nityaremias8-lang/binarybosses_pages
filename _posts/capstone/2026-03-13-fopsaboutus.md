@@ -1,6 +1,6 @@
 ---
 toc: false
-layout: post
+layout: none
 title: About Us
 permalink: /fopsaboutus/
 ---
