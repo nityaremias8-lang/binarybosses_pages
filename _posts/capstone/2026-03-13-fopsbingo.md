@@ -4,6 +4,7 @@ layout: none
 title: Bingo
 permalink: /fopsbingo/
 ---
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
