@@ -4,7 +4,6 @@ layout: none
 title: Bingo
 permalink: /fopsbingo/
 ---
-
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -39,7 +38,7 @@ permalink: /fopsbingo/
   }
   h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 
-  /* NAV */
+  /* NAVIGATION (mirroring About Us: Event Predictor added, Birthday Certificate removed) */
   .fops-nav {
     background: rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -47,7 +46,7 @@ permalink: /fopsbingo/
     backdrop-filter: blur(10px);
   }
   .fops-nav-inner {
-    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
+    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
     height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   }
   .fops-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
@@ -380,7 +379,7 @@ permalink: /fopsbingo/
 <body>
 <div id="fops-bingo-root">
 
-  <!-- Navigation -->
+  <!-- Navigation: Updated to match About Us (Event Predictor added, Birthday Certificate removed) -->
   <nav class="fops-nav">
     <div class="fops-nav-inner">
       <a href="/fops/" class="fops-logo">
@@ -389,14 +388,15 @@ permalink: /fopsbingo/
       </a>
       <div class="fops-menu">
         <div class="fops-dropdown" id="eventsDropdown">
-          <button class="fops-nav-link" onclick="toggleDropdown(event)">
+          <button class="fops-nav-link" id="dropdownToggleBtn">
             Events <span class="fops-chevron">▼</span>
           </button>
           <div class="fops-dropdown-panel">
             <a href="/fopsshop/" class="fops-dp-item"><div class="fops-dp-icon">🛍️</div> ReRuns Shoppe</a>
             <a href="/fopsbingo/" class="fops-dp-item"><div class="fops-dp-icon">🎱</div> BINGO</a>
             <a href="/fopslunchmd/" class="fops-dp-item"><div class="fops-dp-icon">🍽️</div> Social Lunch</a>
-            <a href="/fopsbday/" class="fops-dp-item"><div class="fops-dp-icon">🎂</div> Birthday Certificate</a>
+            <!-- Event Predictor added, Birthday Certificate removed -->
+            <a href="/fopspredictor/" class="fops-dp-item"><div class="fops-dp-icon">🔮</div> Event Predictor</a>
           </div>
         </div>
         <a href="/fopsaboutus/" class="fops-nav-link">About Us</a>
@@ -645,14 +645,19 @@ permalink: /fopsbingo/
     document.querySelectorAll('.tab-btn')[tab === 'info' ? 0 : 1].classList.add('active');
   };
 
-  window.toggleDropdown = function(e) {
-    e.stopPropagation();
-    const dd = document.getElementById('eventsDropdown');
-    if (dd) dd.classList.toggle('open');
-  };
-  document.addEventListener('click', e => {
-    const dd = document.getElementById('eventsDropdown');
-    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
+  // Dropdown toggle
+  const dropdown = document.getElementById('eventsDropdown');
+  const toggleBtn = document.getElementById('dropdownToggleBtn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      if (dropdown) dropdown.classList.toggle('open');
+    });
+  }
+  document.addEventListener('click', function(e) {
+    if (dropdown && !dropdown.contains(e.target)) {
+      dropdown.classList.remove('open');
+    }
   });
 
   const statusDot  = document.getElementById('statusDot');
