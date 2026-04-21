@@ -468,7 +468,7 @@ permalink: /fopsresources/
             <a href="/fopsbingo/" class="fops-dp-item">
               <div class="fops-dp-icon">🎱</div> BINGO
             </a>
-            <a href="/fopslunchh/" class="fops-dp-item">
+            <a href="/fopslunch/" class="fops-dp-item">
               <div class="fops-dp-icon">🍽️</div> Social Lunch
             </a>
             <a href="/fopspredictor/" class="fops-dp-item">
