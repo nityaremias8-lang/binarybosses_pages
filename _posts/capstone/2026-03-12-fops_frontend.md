@@ -625,7 +625,7 @@ async function sendMessage() {
   setInputEnabled(false);
   const typingEl = showTyping();
   try {
-    const res = await fetch(`${BACKEND_URL}/api/chat`, {
+    const res = await fetch(`${pythonURI}/api/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ messages: messageHistory })
