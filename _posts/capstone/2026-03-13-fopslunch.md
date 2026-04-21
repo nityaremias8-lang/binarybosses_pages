@@ -1,14 +1,14 @@
 ---
 toc: false
 layout: none
-title: ReRuns Shoppe
-permalink: /fopsshop/
+title: Social Lunch
+permalink: /fopslunch/
 ---
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ReRuns Shoppe | Friends of Poway Seniors</title>
+<title>Social Lunch | Friends of Poway Seniors</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,500&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -26,13 +26,12 @@ permalink: /fopsshop/
     --teallt:  #3da090;
     --navy:    #1a2e3b;
     --green:   #27ae60;
-    --shop-rose: #c27e6f;
-    --shop-rose-lt: #e0a28f;
+    --orange:  #e67e22;
   }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
 
-  #fops-shop-root {
+  #fops-lunch-root {
     font-family: 'DM Sans', sans-serif;
     background: var(--sage-dk);
     min-height: 100vh;
@@ -40,7 +39,7 @@ permalink: /fopsshop/
   }
   h1, h2, h3 { font-family: 'Playfair Display', serif; line-height: 1.2; }
 
-  /* NAVIGATION (mirroring About Us page: Event Predictor added, Birthday Certificate removed) */
+  /* NAV */
   .fops-nav {
     background: rgba(0,0,0,0.25);
     border-bottom: 1px solid rgba(255,255,255,0.1);
@@ -48,7 +47,7 @@ permalink: /fopsshop/
     backdrop-filter: blur(10px);
   }
   .fops-nav-inner {
-    max-width: 1200px; margin: 0 auto; padding: 0 2rem;
+    max-width: 1100px; margin: 0 auto; padding: 0 2rem;
     height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 1rem;
   }
   .fops-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
@@ -130,14 +129,14 @@ permalink: /fopsshop/
   .tab-content.active { display: block; }
 
   /* INFO TAB */
-  .shop-hero { padding: 2.5rem 2rem 1rem; text-align: center; }
-  .shop-title {
+  .lunch-hero { padding: 2.5rem 2rem 1rem; text-align: center; }
+  .lunch-title {
     font-family: 'Playfair Display', serif;
     font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 700;
     color: var(--white); line-height: 1.1; margin-bottom: 0.5rem;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
   }
-  .shop-subtitle { font-size: 1.2rem; color: var(--gold-lt); font-weight: 400; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
+  .lunch-subtitle { font-size: 1.2rem; color: var(--gold-lt); font-weight: 400; margin-bottom: 1.5rem; letter-spacing: 0.5px; }
   .api-status { max-width: 1200px; margin: 0 auto 1rem; padding: 0 2rem; }
   .status-banner {
     background: rgba(0,0,0,0.3); border-radius: 50px;
@@ -150,11 +149,11 @@ permalink: /fopsshop/
   .status-dot.disconnected { background: #f44336; box-shadow: 0 0 10px #f44336; }
   .status-text.connected { color: #a5d6a7; }
   .status-text.disconnected { color: #ef9a9a; }
-  .shop-grid {
+  .lunch-grid {
     max-width: 1200px; margin: 0 auto; padding: 2rem 2rem 4rem;
     display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;
   }
-  .shop-info, .volunteer-section {
+  .lunch-info, .volunteer-section {
     background: rgba(255,255,255,0.07); backdrop-filter: blur(8px);
     border-radius: 24px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1);
   }
@@ -177,29 +176,31 @@ permalink: /fopsshop/
   .hours-list li:last-child { border-bottom: none; }
   .day { font-weight: 700; color: var(--gold-lt); font-size: 1.1rem; }
   .time { color: var(--white); font-weight: 600; }
-  .shop-highlight {
-    background: rgba(201,145,61,0.2); border-radius: 12px; padding: 0.5rem 1rem;
-    display: inline-block; margin-top: 0.5rem;
-  }
-  .impact-badge {
-    background: linear-gradient(145deg, rgba(194,126,111,0.2), rgba(194,126,111,0.35));
-    border-left: 6px solid var(--shop-rose);
+  .chef-notice {
+    background: linear-gradient(145deg, rgba(230,126,34,0.15), rgba(230,126,34,0.25));
+    border-left: 6px solid var(--orange);
     border-radius: 12px;
     padding: 1.2rem;
     margin-top: 1rem;
   }
-  .impact-item { margin-bottom: 0.75rem; display: flex; gap: 10px; align-items: baseline; }
-  .impact-icon { font-size: 1.2rem; }
-  .impact-text { font-weight: 500; color: #f5e2d9; }
-  .price-tag { display: flex; justify-content: space-between; padding: 1rem 0; border-bottom: 2px solid rgba(201,145,61,0.3); font-size: 1.1rem; }
-  .price-tag:last-child { border-bottom: none; }
-  .price-label { font-weight: 600; }
-  .price-value { font-weight: 800; color: var(--gold-lt); font-size: 1.3rem; }
-  .donation-policy {
-    background: rgba(194,126,111,0.15);
-    border-radius: 16px; padding: 1.2rem; margin-top: 1rem;
+  .chef-notice p { font-size: 1rem; margin-bottom: 0.5rem; }
+  .chef-name { color: var(--orange); font-weight: 700; font-size: 1.1rem; }
+  .benefits-list { list-style: none; margin-top: 0.5rem; }
+  .benefits-list li { padding: 0.5rem 0; display: flex; align-items: center; gap: 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .benefit-icon { font-size: 1.1rem; color: var(--gold-lt); }
+  .reserve-note {
+    background: rgba(201,145,61,0.2);
+    border-radius: 12px; padding: 1rem;
+    margin-top: 1rem;
+    text-align: center;
   }
-  .donation-policy p { font-size: 0.95rem; margin-bottom: 0.5rem; }
+  .external-link {
+    color: var(--gold-lt);
+    text-decoration: none;
+  }
+  .external-link:hover {
+    text-decoration: underline;
+  }
 
   /* VOLUNTEER FORM */
   .volunteer-header { text-align: center; margin-bottom: 2rem; }
@@ -239,66 +240,26 @@ permalink: /fopsshop/
   .alert-success { background: rgba(76,175,80,0.2); border: 2px solid #4caf50; color: #a5d6a7; }
   .alert-error { background: rgba(244,67,54,0.2); border: 2px solid #f44336; color: #ef9a9a; }
 
-  /* IMPACT TAB */
-  #impact-tab-content {
-    max-width: 1000px; margin: 0 auto;
-    padding: 1rem 1rem 3rem;
-    display: flex; flex-direction: column; align-items: center;
+  /* RESERVATION TAB */
+  #reservation-tab-content {
+    max-width: 800px; margin: 0 auto;
+    padding: 2rem 2rem 4rem;
   }
-  #impact-screen {
-    background: linear-gradient(150deg, #1a2e3b 0%, #24415a 50%, #2a7c6f 100%);
-    border-radius: 24px; display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 14px; padding: 3rem 2rem; width: 100%;
+  .reservation-card {
+    background: rgba(255,255,255,0.08); backdrop-filter: blur(8px);
+    border-radius: 24px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1);
   }
-  .badge {
-    background: rgba(200,147,42,0.2); border: 1px solid rgba(200,147,42,0.5);
-    border-radius: 100px; padding: 5px 18px;
-    font-size: 11px; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-lt);
+  .reservation-card h2 {
+    font-size: 1.8rem; color: var(--gold-lt); margin-bottom: 1.5rem;
+    text-align: center; border-bottom: 2px solid rgba(201,145,61,0.3); padding-bottom: 0.75rem;
   }
-  #impact-screen h1 {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(32px, 6vw, 58px); font-weight: 700; color: #fff;
-    text-align: center; line-height: 1.1; letter-spacing: -1px;
+  .reservation-note {
+    background: rgba(230,126,34,0.15);
+    border-radius: 12px; padding: 1rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    border-left: 4px solid var(--orange);
   }
-  #impact-screen h1 em { color: var(--gold-lt); font-style: italic; }
-  .impact-desc { font-size: clamp(13px,1.8vw,15px); color: rgba(255,255,255,0.6); text-align: center; max-width: 420px; line-height: 1.6; font-weight: 300; }
-  .impact-pills { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-  .impact-pill { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 100px; padding: 5px 14px; font-size: 12px; color: rgba(255,255,255,0.75); }
-  .pixel-btn {
-    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
-    background: var(--gold); border: none; color: var(--navy);
-    padding: 13px 36px; border-radius: 50px; cursor: pointer;
-    box-shadow: 0 8px 28px rgba(200,147,42,0.4); transition: all 0.18s ease; margin-top: 6px;
-  }
-  .pixel-btn:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 12px 36px rgba(200,147,42,0.5); }
-  .pixel-btn.secondary { background: transparent; border: 2px solid var(--gold-lt); color: var(--gold-lt); box-shadow: none; }
-  .pixel-btn.secondary:hover { background: rgba(232,184,75,0.12); }
-  #impact-wrapper { display: flex; flex-direction: column; align-items: center; width: 100%; }
-  .stats-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1rem; width: 100%; margin: 1rem 0;
-  }
-  .stat-card {
-    background: rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem;
-    text-align: center; border: 1px solid rgba(255,255,255,0.1);
-  }
-  .stat-number {
-    font-family: 'Playfair Display', serif; font-size: 2.5rem; font-weight: 700;
-    color: var(--gold-lt); margin-bottom: 0.5rem;
-  }
-  .stat-label { font-size: 0.85rem; color: rgba(255,255,255,0.7); text-transform: uppercase; letter-spacing: 1px; }
-  .impact-grid-cards {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1rem; width: 100%; margin: 1rem 0;
-  }
-  .impact-card {
-    background: rgba(255,255,255,0.08); border-radius: 16px; padding: 1.5rem;
-    text-align: center; border-left: 4px solid var(--gold);
-  }
-  .impact-card-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-  .impact-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; color: var(--gold-lt); }
-  .impact-card p { font-size: 0.9rem; color: rgba(255,255,255,0.8); line-height: 1.5; }
 
   /* FOOTER */
   .fops-footer { background: rgba(0,0,0,0.3); border-top: 1px solid rgba(255,255,255,0.08); padding: 1.5rem 2rem; }
@@ -309,33 +270,32 @@ permalink: /fopsshop/
   .fops-footer-links a:hover { color: var(--white); }
 
   @media (max-width: 900px) {
-    .shop-grid { grid-template-columns: 1fr; }
+    .lunch-grid { grid-template-columns: 1fr; }
     .fops-logo span { display: none; }
     .form-row { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
-<div id="fops-shop-root">
+<div id="fops-lunch-root">
 
-  <!-- Navigation: Updated to match About Us (Event Predictor added, Birthday Certificate removed) -->
+  <!-- Navigation -->
   <nav class="fops-nav">
     <div class="fops-nav-inner">
       <a href="/fops/" class="fops-logo">
-        <div class="fops-logo-icon">RR</div>
+        <div class="fops-logo-icon">SL</div>
         <span>Friends of Poway Seniors</span>
       </a>
       <div class="fops-menu">
         <div class="fops-dropdown" id="eventsDropdown">
-          <button class="fops-nav-link" id="dropdownToggleBtn">
+          <button class="fops-nav-link" onclick="toggleDropdown(event)">
             Events <span class="fops-chevron">▼</span>
           </button>
           <div class="fops-dropdown-panel">
             <a href="/fopsshop/" class="fops-dp-item"><div class="fops-dp-icon">🛍️</div> ReRuns Shoppe</a>
             <a href="/fopsbingo/" class="fops-dp-item"><div class="fops-dp-icon">🎱</div> BINGO</a>
             <a href="/fopslunch/" class="fops-dp-item"><div class="fops-dp-icon">🍽️</div> Social Lunch</a>
-            <!-- Event Predictor added, Birthday Certificate removed as requested -->
-            <a href="/fopspredictor/" class="fops-dp-item"><div class="fops-dp-icon">🔮</div> Event Predictor</a>
+            <a href="/fopsbday/" class="fops-dp-item"><div class="fops-dp-icon">🎂</div> Birthday Certificate</a>
           </div>
         </div>
         <a href="/fopsaboutus/" class="fops-nav-link">About Us</a>
@@ -346,15 +306,15 @@ permalink: /fopsshop/
   </nav>
 
   <!-- Hero -->
-  <section class="shop-hero">
-    <h1 class="shop-title">ReRuns ReSale Shoppe</h1>
-    <p class="shop-subtitle">Boutique Resale with Purpose • Donate • Shop • Volunteer</p>
+  <section class="lunch-hero">
+    <h1 class="lunch-title">Social Lunch Program</h1>
+    <p class="lunch-subtitle">Good Food • Good Company • Good Cause</p>
   </section>
 
   <!-- Tabs -->
   <div class="page-tabs">
-    <button class="tab-btn active" onclick="switchTab('info')">📋 Info &amp; Volunteer</button>
-    <button class="tab-btn" onclick="switchTab('impact')">💝 Community Impact</button>
+    <button class="tab-btn active" onclick="switchTab('info')">Info & Volunteer</button>
+    <button class="tab-btn" onclick="switchTab('reservation')">Make a Reservation</button>
   </div>
 
   <!-- TAB: INFO & VOLUNTEER -->
@@ -366,59 +326,45 @@ permalink: /fopsshop/
       </div>
     </div>
 
-    <div class="shop-grid">
-      <!-- Left: Shoppe Info -->
-      <div class="shop-info">
+    <div class="lunch-grid">
+      <!-- Left: Lunch Info -->
+      <div class="lunch-info">
         <div class="info-section">
-          <h2>ReRuns Shoppe</h2>
+          <h2>Social Lunch</h2>
           <div class="info-card">
-            <h3>Visit Us | Donate | Shop for a Cause</h3>
+            <h3>Join Us For Lunch</h3>
             <div class="info-row"><span class="info-label">Location:</span><span class="info-value">Friends of Poway Seniors Center</span></div>
             <div class="info-row"><span class="info-label">Address:</span><span class="info-value">13094 Civic Center Dr. Poway, CA 92064</span></div>
             <ul class="hours-list">
-              <li><span class="day">Wednesday</span><span class="time">10:00 AM – 3:00 PM</span></li>
-              <li><span class="day">Thursday</span><span class="time">10:00 AM – 3:00 PM</span></li>
-              <li><span class="day">Friday</span><span class="time">10:00 AM – 3:00 PM</span></li>
-              <li><span class="day">Saturday</span><span class="time">10:00 AM – 3:00 PM</span></li>
-              <li><span class="day">Sunday</span><span class="time">10:00 AM – 3:00 PM</span></li>
+              <li><span class="day">Monday - Friday</span><span class="time">11:30 AM - 1:00 PM</span></li>
             </ul>
-            <div class="shop-highlight">✨ Closed Monday & Tuesday for donations processing ✨</div>
-          </div>
-        </div>
-
-        <div class="info-section">
-          <h2>Community Impact</h2>
-          <div class="info-card">
-            <div class="impact-item"><span class="impact-icon"></span><span class="impact-text"><strong>Furnishing Transitional Housing</strong> – Partnering with Soroptimist International of Poway & Crisis House for survivors of domestic violence.</span></div>
-            <div class="impact-item"><span class="impact-icon"></span><span class="impact-text"><strong>Distributed to Homeless</strong> – Essential goods donated across San Diego County.</span></div>
-            <div class="impact-item"><span class="impact-icon">🐾</span><span class="impact-text"><strong>Animals in Need</strong> – Gifts to Helen Woodward Animal Rescue & Scratch My Belly.</span></div>
-            <div class="impact-item"><span class="impact-icon"></span><span class="impact-text"><strong>Aiding Unsheltered Neighbors</strong> – Alleviating discomfort of living on the streets.</span></div>
-            <div class="impact-badge">
-              <p style="font-weight:700;"> Since July 2021 — Donation & Distribution Impact</p>
-              <p style="font-size:0.9rem;">Thanks to our wonderful ReRuns Volunteers and Donors for contributing time, talent & donations to our successful resale shoppe and distribution program.</p>
+            <div class="chef-notice">
+              <p><span class="chef-name">The NEW Chef Is In</span></p>
+              <p>Chef Charlie of Charlie's Classic Cooking and his staff will be cooking and sharing their culinary talents for the senior lunch program starting February 1st</p>
+            </div>
+            <div class="reserve-note">
+              <p><strong>Reservations are required by 1:00 PM the day before you wish to eat lunch</strong></p>
             </div>
           </div>
         </div>
 
         <div class="info-section">
-          <h2>🛒 Donation Guidelines</h2>
+          <h2>Program Benefits</h2>
           <div class="info-card">
-            <div class="donation-policy">
-              <p>✔️ Gently used clothing, accessories, home decor, small furniture, books & collectibles</p>
-              <p>✔️ Electronics & appliances in working condition</p>
-              <p>✔️ All proceeds support Friends of Poway Seniors & our redistribution mission</p>
-              <p>📞 For large pickups: call (858) 123-4567 or email reruns@fopowayseniors.org</p>
-            </div>
-            <div class="price-tag"><span class="price-label">Tax Receipts</span><span class="price-value">Available upon request</span></div>
-            <div class="info-row" style="margin-top:1rem;"><span class="info-label"> Payments:</span><span class="info-value">Cash, Credit Cards, Contactless</span></div>
-            <div class="info-row"><span class="info-label"> Specials:</span><span class="info-value">Senior discount Wednesdays • Volunteer appreciation sales</span></div>
+            <p style="margin-bottom: 1rem;">Friends of Poway Seniors Bingo Proceeds greatly support the 5-day a week meal program. Community lunches like ours support Poway seniors by providing:</p>
+            <ul class="benefits-list">
+              <li><span class="benefit-icon">👥</span> Social opportunities to meet with others</li>
+              <li><span class="benefit-icon">💰</span> Budget-conscious seniors a lower-cost alternative to restaurant dining</li>
+              <li><span class="benefit-icon">🍲</span> Provides at least one hot meal a day for seniors who may not otherwise cook or buy complete meals for themselves</li>
+            </ul>
           </div>
         </div>
 
         <div class="info-section">
-          <h2> Our Vision</h2>
+          <h2>More Information</h2>
           <div class="info-card">
-            <p style="margin-bottom:0.75rem;">"A boutique resale shoppe with the vision to positively impact our community. Proceeds support our organization and the communities we serve. Through our donation program, we redistribute items to various San Diego organizations and help them help others."</p>
+            <p>For more information on the New Congregate Lunch program, please visit:</p>
+            <p style="margin-top: 0.5rem;"><a href="https://poway.org/1073/Meal-Program" target="_blank" class="external-link">poway.org/1073/Meal-Program</a></p>
           </div>
         </div>
       </div>
@@ -426,8 +372,8 @@ permalink: /fopsshop/
       <!-- Right: Volunteer Application -->
       <div class="volunteer-section">
         <div class="volunteer-header">
-          <h2>Become a ReRuns Volunteer</h2>
-          <p>Join our warm team of shop & donation heroes — sorting, styling, and serving community.</p>
+          <h2>Volunteer Opportunities</h2>
+          <p>Join our team of Social Lunch volunteers</p>
         </div>
         <div id="alertContainer"></div>
         <form id="volunteerForm">
@@ -438,81 +384,68 @@ permalink: /fopsshop/
           <div class="form-group"><label for="email">Email Address *</label><input type="email" id="email" required placeholder="jane.smith@example.com"></div>
           <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" placeholder="(858) 555-1234"></div>
           <div class="form-group">
-            <label>Availability (ReRuns Shoppe hours)</label>
+            <label>Availability (Lunch hours 11:30 AM - 1:00 PM)</label>
             <div class="checkbox-group">
+              <div class="checkbox-item"><input type="checkbox" id="avail_mon" name="availability_days" value="Monday"><label for="avail_mon">Monday</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="avail_tue" name="availability_days" value="Tuesday"><label for="avail_tue">Tuesday</label></div>
               <div class="checkbox-item"><input type="checkbox" id="avail_wed" name="availability_days" value="Wednesday"><label for="avail_wed">Wednesday</label></div>
               <div class="checkbox-item"><input type="checkbox" id="avail_thu" name="availability_days" value="Thursday"><label for="avail_thu">Thursday</label></div>
               <div class="checkbox-item"><input type="checkbox" id="avail_fri" name="availability_days" value="Friday"><label for="avail_fri">Friday</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="avail_sat" name="availability_days" value="Saturday"><label for="avail_sat">Saturday</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="avail_sun" name="availability_days" value="Sunday"><label for="avail_sun">Sunday</label></div>
             </div>
           </div>
           <div class="form-group">
-            <label>Preferred Role (ReRuns Shoppe)</label>
+            <label>Preferred Role</label>
             <div class="checkbox-group">
-              <div class="checkbox-item"><input type="checkbox" id="role_cashier" name="preferred_roles" value="Cashier / Sales"><label for="role_cashier">Cashier / Sales</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="role_sorting" name="preferred_roles" value="Donation Sorting"><label for="role_sorting">Donation Sorting</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="role_merchandise" name="preferred_roles" value="Merchandising"><label for="role_merchandise">Merchandising / Display</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="role_pickup" name="preferred_roles" value="Donation Pickup"><label for="role_pickup">Donation Pickup (drive)</label></div>
-              <div class="checkbox-item"><input type="checkbox" id="role_distribution" name="preferred_roles" value="Community Distribution"><label for="role_distribution">Community Distribution</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="role_serving" name="preferred_roles" value="Food Serving"><label for="role_serving">Food Serving</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="role_setup" name="preferred_roles" value="Setup / Cleanup"><label for="role_setup">Setup / Cleanup</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="role_greeting" name="preferred_roles" value="Greeting / Check-in"><label for="role_greeting">Greeting / Check-in</label></div>
+              <div class="checkbox-item"><input type="checkbox" id="role_kitchen" name="preferred_roles" value="Kitchen Assistant"><label for="role_kitchen">Kitchen Assistant</label></div>
             </div>
           </div>
-          <div class="form-group"><label for="experience">Previous Experience or special skills (optional)</label><textarea id="experience" rows="2" placeholder="Retail, customer service, organizing, driving? Let us know!"></textarea></div>
-          <button type="button" class="btn-submit" id="submitBtn">Submit ReRuns Volunteer Application</button>
+          <div class="form-group"><label for="experience">Previous Experience or special skills (optional)</label><textarea id="experience" rows="2" placeholder="Food service, customer service, or other relevant experience?"></textarea></div>
+          <div class="form-group"><label for="dietary">Dietary Restrictions (if any)</label><textarea id="dietary" rows="1" placeholder="Food allergies, dietary restrictions..."></textarea></div>
+          <button type="button" class="btn-submit" id="submitBtn">Submit Social Lunch Volunteer Application</button>
         </form>
         <div style="margin-top: 1.5rem; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
-          <p>You will be contacted within 3-5 business days. Thank you for supporting our mission.</p>
+          <p>You will be contacted within 3-5 business days. Thank you for supporting our seniors</p>
         </div>
       </div>
     </div>
-  </div><!-- /tab-info -->
+  </div>
 
-  <!-- TAB: COMMUNITY IMPACT -->
-  <div id="tab-impact" class="tab-content">
-    <div id="impact-tab-content">
-      <div id="impact-screen">
-        <div class="badge">Community Champions</div>
-        <h1><em>Our Redistribution</em> Impact</h1>
-        <p class="impact-desc">ReRuns Shoppe since July 2021 – turning donations into hope across San Diego County</p>
-        <div class="impact-pills">
-          <div class="impact-pill"> Transitional Housing</div>
-          <div class="impact-pill"> Homeless Outreach</div>
-          <div class="impact-pill"> Animal Rescue</div>
-          <div class="impact-pill"> Street Relief</div>
+  <!-- TAB: MAKE A RESERVATION -->
+  <div id="tab-reservation" class="tab-content">
+    <div id="reservation-tab-content">
+      <div class="reservation-card">
+        <h2>Lunch Reservation</h2>
+        <div class="reservation-note">
+          <p>Reservations are required by 1:00 PM the day before you wish to eat lunch</p>
         </div>
-      </div>
-
-      <div id="impact-wrapper">
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-number">4+</div><div class="stat-label">Years of Service</div></div>
-          <div class="stat-card"><div class="stat-number">1000+</div><div class="stat-label">Families Helped</div></div>
-          <div class="stat-card"><div class="stat-number">10+</div><div class="stat-label">Partner Orgs</div></div>
-          <div class="stat-card"><div class="stat-number">50+</div><div class="stat-label">Active Volunteers</div></div>
-        </div>
-
-        <div class="impact-grid-cards">
-          <div class="impact-card"><div class="impact-card-icon"></div><h3>Transitional Housing</h3><p>Furnished homes for survivors of domestic violence in partnership with Soroptimist Intl. of Poway & Crisis House</p></div>
-          <div class="impact-card"><div class="impact-card-icon"></div><h3>Homeless Outreach</h3><p>Essential goods distributed across San Diego County to those experiencing homelessness</p></div>
-          <div class="impact-card"><div class="impact-card-icon"></div><h3>Animal Rescue</h3><p>Gifted supplies to Helen Woodward Animal Rescue & Scratch My Belly</p></div>
-          <div class="impact-card"><div class="impact-card-icon"></div><h3>Street Relief</h3><p>Alleviating the discomfort of living on the street — dignity through donations</p></div>
-        </div>
-
-        <div style="background: rgba(255,255,255,0.08); border-radius: 20px; padding: 1.5rem; text-align: center; width: 100%; margin: 1rem 0;">
-          <p style="font-size: 1rem;"> <strong>Since opening</strong>, ReRuns has redirected tons of quality items from landfills into the hands of neighbors in need. Every purchase & donation multiplies our impact.</p>
-          <p style="margin-top: 0.8rem; color: var(--gold-lt);"> <em>We are a boutique resale shoppe with the vision to positively impact our community.</em></p>
-        </div>
-
-        <div style="display: flex; gap: 12px; margin-top: 1rem;">
-          <button class="pixel-btn" onclick="switchTab('info')">Volunteer Today →</button>
-          <a href="https://gateway.clearent.net/paylink/000001634294/16126366" target="_blank" class="pixel-btn secondary" style="text-decoration: none;">Make a Donation</a>
+        <div id="reservationAlertContainer"></div>
+        <form id="reservationForm">
+          <div class="form-row">
+            <div class="form-group"><label for="res_first_name">First Name *</label><input type="text" id="res_first_name" required placeholder="John"></div>
+            <div class="form-group"><label for="res_last_name">Last Name *</label><input type="text" id="res_last_name" required placeholder="Doe"></div>
+          </div>
+          <div class="form-group"><label for="res_email">Email Address *</label><input type="email" id="res_email" required placeholder="john.doe@example.com"></div>
+          <div class="form-group"><label for="res_phone">Phone Number</label><input type="tel" id="res_phone" placeholder="(858) 555-1234"></div>
+          <div class="form-row">
+            <div class="form-group"><label for="res_date">Reservation Date *</label><input type="date" id="res_date" required></div>
+            <div class="form-group"><label for="res_guests">Number of Guests *</label><select id="res_guests"><option value="1">1 Guest</option><option value="2">2 Guests</option><option value="3">3 Guests</option><option value="4">4 Guests</option></select></div>
+          </div>
+          <div class="form-group"><label for="res_dietary">Dietary Restrictions (optional)</label><textarea id="res_dietary" rows="1" placeholder="Food allergies, dietary restrictions..."></textarea></div>
+          <button type="button" class="btn-submit" id="reserveBtn">Make Reservation</button>
+        </form>
+        <div style="margin-top: 1.5rem; text-align: center; color: rgba(255,255,255,0.4); font-size: 0.85rem;">
+          <p>Please arrive by 11:30 AM on your reserved date. Thank you</p>
         </div>
       </div>
     </div>
-  </div><!-- /tab-impact -->
+  </div>
 
   <footer class="fops-footer">
     <div class="fops-footer-inner">
-      <span>© 2025 PVSCC 501(c)(3) · EIN: 51-0183384 · ReRuns ReSale Shoppe</span>
+      <span>© 2025 PVSCC 501(c)(3) · EIN: 51-0183384 · Social Lunch Program</span>
       <div class="fops-footer-links">
         <a href="/fopsaboutus/">About Us</a>
         <a href="/fopsresources/">Resources</a>
@@ -539,22 +472,19 @@ permalink: /fopsshop/
     document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + tab).classList.add('active');
-    document.querySelectorAll('.tab-btn')[tab === 'info' ? 0 : 1].classList.add('active');
+    const btns = document.querySelectorAll('.tab-btn');
+    if (tab === 'info') btns[0].classList.add('active');
+    else btns[1].classList.add('active');
   };
 
-  // Dropdown toggle
-  const dropdown = document.getElementById('eventsDropdown');
-  const toggleBtn = document.getElementById('dropdownToggleBtn');
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      if (dropdown) dropdown.classList.toggle('open');
-    });
-  }
-  document.addEventListener('click', function(e) {
-    if (dropdown && !dropdown.contains(e.target)) {
-      dropdown.classList.remove('open');
-    }
+  window.toggleDropdown = function(e) {
+    e.stopPropagation();
+    const dd = document.getElementById('eventsDropdown');
+    if (dd) dd.classList.toggle('open');
+  };
+  document.addEventListener('click', e => {
+    const dd = document.getElementById('eventsDropdown');
+    if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
 
   const statusDot = document.getElementById('statusDot');
@@ -562,14 +492,14 @@ permalink: /fopsshop/
 
   async function testAPIConnection() {
     try {
-      const res = await fetch(`${pythonURI}/api/reruns/test`, {
+      const res = await fetch(`${pythonURI}/api/social-lunch/test`, {
         ...fetchOptions, method: 'GET', headers: { 'Content-Type': 'application/json' }, mode: 'cors'
       });
       if (res.ok) {
         const data = await res.json();
         statusDot.className = 'status-dot connected';
         statusText.className = 'status-text connected';
-        statusText.textContent = `✅ API Ready · ${data.message || 'ReRuns System online'}`;
+        statusText.textContent = ` API Ready · ${data.message || 'Social Lunch System online'}`;
       } else { throw new Error(`HTTP ${res.status}`); }
     } catch {
       statusDot.className = 'status-dot disconnected';
@@ -578,15 +508,16 @@ permalink: /fopsshop/
     }
   }
 
+  // Volunteer Form Submission
   const alertContainer = document.getElementById('alertContainer');
   const submitBtn = document.getElementById('submitBtn');
   const volunteerForm = document.getElementById('volunteerForm');
 
-  function showAlert(msg, type = 'error') {
+  function showAlert(msg, type = 'error', container = alertContainer) {
     const div = document.createElement('div');
     div.className = `alert alert-${type}`;
     div.textContent = msg;
-    alertContainer.appendChild(div);
+    container.appendChild(div);
     setTimeout(() => div.remove(), 5000);
   }
 
@@ -600,7 +531,7 @@ permalink: /fopsshop/
     if (!firstName || !lastName || !email) {
       showAlert('Please fill in all required fields (First Name, Last Name, Email)');
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit ReRuns Volunteer Application';
+      submitBtn.textContent = 'Submit Social Lunch Volunteer Application';
       return;
     }
     const availabilityDays = [...document.querySelectorAll('input[name="availability_days"]:checked')].map(cb => cb.value);
@@ -610,16 +541,17 @@ permalink: /fopsshop/
       phone: document.getElementById('phone').value.trim() || '',
       availability_days: availabilityDays,
       preferred_roles: preferredRoles,
-      experience: document.getElementById('experience').value.trim() || ''
+      experience: document.getElementById('experience').value.trim() || '',
+      dietary_restrictions: document.getElementById('dietary').value.trim() || ''
     };
     try {
-      const res = await fetch(`${pythonURI}/api/reruns/volunteer`, {
+      const res = await fetch(`${pythonURI}/api/social-lunch/volunteer`, {
         ...fetchOptions, method: 'POST', headers: { 'Content-Type': 'application/json' }, mode: 'cors',
         body: JSON.stringify(payload)
       });
       const result = await res.json();
       if (result.success) {
-        showAlert(`${result.message || 'Application received! Welcome to ReRuns team.'} Volunteer ID: ${result.volunteer_id}`, 'success');
+        showAlert(`${result.message || 'Application received! Welcome to Social Lunch team.'} Volunteer ID: ${result.volunteer_id}`, 'success');
         volunteerForm.reset();
         document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -629,11 +561,58 @@ permalink: /fopsshop/
       showAlert(`Network error. Could not reach backend at ${pythonURI}.`);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit ReRuns Volunteer Application';
+      submitBtn.textContent = 'Submit Social Lunch Volunteer Application';
+    }
+  }
+
+  // Reservation Form Submission
+  const reservationAlertContainer = document.getElementById('reservationAlertContainer');
+  const reserveBtn = document.getElementById('reserveBtn');
+  const reservationForm = document.getElementById('reservationForm');
+
+  async function submitReservation() {
+    reserveBtn.disabled = true;
+    reserveBtn.textContent = 'Submitting...';
+    reservationAlertContainer.innerHTML = '';
+    const firstName = document.getElementById('res_first_name').value.trim();
+    const lastName = document.getElementById('res_last_name').value.trim();
+    const email = document.getElementById('res_email').value.trim();
+    const reservationDate = document.getElementById('res_date').value;
+    if (!firstName || !lastName || !email || !reservationDate) {
+      showAlert('Please fill in all required fields (First Name, Last Name, Email, Date)', 'error', reservationAlertContainer);
+      reserveBtn.disabled = false;
+      reserveBtn.textContent = 'Make Reservation';
+      return;
+    }
+    const payload = {
+      first_name: firstName, last_name: lastName, email,
+      phone: document.getElementById('res_phone').value.trim() || '',
+      reservation_date: reservationDate,
+      number_of_guests: parseInt(document.getElementById('res_guests').value),
+      dietary_restrictions: document.getElementById('res_dietary').value.trim() || ''
+    };
+    try {
+      const res = await fetch(`${pythonURI}/api/social-lunch/reserve`, {
+        ...fetchOptions, method: 'POST', headers: { 'Content-Type': 'application/json' }, mode: 'cors',
+        body: JSON.stringify(payload)
+      });
+      const result = await res.json();
+      if (result.success) {
+        showAlert(`${result.message || 'Reservation confirmed'} Reservation ID: ${result.reservation_id}`, 'success', reservationAlertContainer);
+        reservationForm.reset();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else { showAlert(`Error: ${result.error || 'Reservation failed'}`, 'error', reservationAlertContainer); }
+    } catch (err) {
+      console.error('Reservation error:', err);
+      showAlert(`Network error. Could not reach backend at ${pythonURI}.`, 'error', reservationAlertContainer);
+    } finally {
+      reserveBtn.disabled = false;
+      reserveBtn.textContent = 'Make Reservation';
     }
   }
 
   submitBtn.onclick = submitVolunteerForm;
+  reserveBtn.onclick = submitReservation;
   testAPIConnection();
 </script>
 
