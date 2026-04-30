@@ -5,8 +5,6 @@ description: IOC-2 — threats, defenses, and encryption
 type: lessons
 permalink: /attacks
 ---
-<!-- Citation: UI Content generated and debugging was done with Claude by Anthropic. Claude.ai, Anthropic, 2024. https://claude.ai -->
-<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
