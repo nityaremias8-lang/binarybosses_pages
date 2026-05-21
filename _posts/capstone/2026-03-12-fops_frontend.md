@@ -275,13 +275,57 @@ sticky_rank: 1
     font-weight: 700;
     color: var(--white);
     line-height: 1.05;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .fops-main-title em {
     color: var(--gold-lt);
     font-style: italic;
     display: block;
+  }
+
+  /* Logo circle styles - EXTRA LARGE SIZE */
+  .fops-logo-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 2rem;
+  }
+
+  .fops-logo-circle {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border: 5px solid var(--gold);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .fops-logo-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .fops-logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Fallback if image doesn't load */
+  .fops-logo-circle .logo-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--sage), var(--sage-dk));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: var(--gold-lt);
   }
 
   .fops-hero-sub {
@@ -300,6 +344,14 @@ sticky_rank: 1
     border-radius: 2px;
     margin: 2rem auto 0;
     opacity: 0.75;
+  }
+
+  /* Responsive adjustments for logo */
+  @media (max-width: 700px) {
+    .fops-logo-circle {
+      width: 200px;
+      height: 200px;
+    }
   }
 
   /* divider */
@@ -475,6 +527,7 @@ sticky_rank: 1
   .fu2 { animation-delay: 0.15s; }
   .fu3 { animation-delay: 0.25s; }
   .fu4 { animation-delay: 0.35s; }
+  .fu5 { animation-delay: 0.45s; }
 
   /* Responsive */
   @media (max-width: 700px) {
@@ -740,7 +793,7 @@ sticky_rank: 1
     </div>
   </nav>
 
-  <!-- ===== HERO TITLE ===== -->
+  <!-- ===== HERO TITLE WITH EXTRA LARGE LOGO ===== -->
   <section class="fops-hero-title">
     <div class="fops-hero-title-inner">
       <div class="fops-badge fu fu1">🌿 Poway, California</div>
@@ -748,10 +801,20 @@ sticky_rank: 1
         Friends of
         <em>Poway Seniors</em>
       </h1>
-      <p class="fops-hero-sub fu fu3">
+      
+      <!-- Extra Large Logo Circle -->
+      <div class="fops-logo-container fu fu3">
+        <div class="fops-logo-circle">
+          <img src="/images/capstone/fops.png" 
+               alt="Friends of Poway Seniors Logo" 
+               onerror="this.onerror=null; this.parentElement.innerHTML='<div class=logo-fallback>🌿</div>'">
+        </div>
+      </div>
+      
+      <p class="fops-hero-sub fu fu4">
         A volunteer-driven nonprofit dedicated to supporting seniors and the broader Poway community through programs, resources, and connection.
       </p>
-      <div class="fops-title-divider fu fu4"></div>
+      <div class="fops-title-divider fu fu5"></div>
     </div>
   </section>
 

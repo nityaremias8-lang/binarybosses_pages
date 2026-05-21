@@ -394,7 +394,7 @@ permalink: /fopsbingo/
           <div class="fops-dropdown-panel">
             <a href="/fopsshop/" class="fops-dp-item"><div class="fops-dp-icon">🛍️</div> ReRuns Shoppe</a>
             <a href="/fopsbingo/" class="fops-dp-item"><div class="fops-dp-icon">🎱</div> BINGO</a>
-            <a href="/fopslunchmd/" class="fops-dp-item"><div class="fops-dp-icon">🍽️</div> Social Lunch</a>
+            <a href="/fopslunch/" class="fops-dp-item"><div class="fops-dp-icon">🍽️</div> Social Lunch</a>
             <!-- Event Predictor added, Birthday Certificate removed -->
             <a href="/fopspredictor/" class="fops-dp-item"><div class="fops-dp-icon">🔮</div> Event Predictor</a>
           </div>
