@@ -216,7 +216,7 @@ sticky_rank: 1
     flex-shrink: 0;
   }
 
-  /* ===== HERO TITLE SECTION (NEW) ===== */
+  /* ===== HERO TITLE SECTION ===== */
   .fops-hero-title {
     padding: 5rem 2rem 3.5rem;
     text-align: center;
@@ -275,13 +275,57 @@ sticky_rank: 1
     font-weight: 700;
     color: var(--white);
     line-height: 1.05;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .fops-main-title em {
     color: var(--gold-lt);
     font-style: italic;
     display: block;
+  }
+
+  /* Logo circle styles - EXTRA LARGE SIZE */
+  .fops-logo-container {
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0 2rem;
+  }
+
+  .fops-logo-circle {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border: 5px solid var(--gold);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .fops-logo-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+
+  .fops-logo-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Fallback if image doesn't load */
+  .fops-logo-circle .logo-fallback {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--sage), var(--sage-dk));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    color: var(--gold-lt);
   }
 
   .fops-hero-sub {
@@ -300,6 +344,14 @@ sticky_rank: 1
     border-radius: 2px;
     margin: 2rem auto 0;
     opacity: 0.75;
+  }
+
+  /* Responsive adjustments for logo */
+  @media (max-width: 700px) {
+    .fops-logo-circle {
+      width: 200px;
+      height: 200px;
+    }
   }
 
   /* divider */
@@ -475,6 +527,7 @@ sticky_rank: 1
   .fu2 { animation-delay: 0.15s; }
   .fu3 { animation-delay: 0.25s; }
   .fu4 { animation-delay: 0.35s; }
+  .fu5 { animation-delay: 0.45s; }
 
   /* Responsive */
   @media (max-width: 700px) {
@@ -740,7 +793,7 @@ sticky_rank: 1
     </div>
   </nav>
 
-  <!-- ===== HERO TITLE (NEW) ===== -->
+  <!-- ===== HERO TITLE WITH EXTRA LARGE LOGO ===== -->
   <section class="fops-hero-title">
     <div class="fops-hero-title-inner">
       <div class="fops-badge fu fu1">🌿 Poway, California</div>
@@ -748,10 +801,20 @@ sticky_rank: 1
         Friends of
         <em>Poway Seniors</em>
       </h1>
-      <p class="fops-hero-sub fu fu3">
+      
+      <!-- Extra Large Logo Circle -->
+      <div class="fops-logo-container fu fu3">
+        <div class="fops-logo-circle">
+          <img src="/images/capstone/fops.png" 
+               alt="Friends of Poway Seniors Logo" 
+               onerror="this.onerror=null; this.parentElement.innerHTML='<div class=logo-fallback>🌿</div>'">
+        </div>
+      </div>
+      
+      <p class="fops-hero-sub fu fu4">
         A volunteer-driven nonprofit dedicated to supporting seniors and the broader Poway community through programs, resources, and connection.
       </p>
-      <div class="fops-title-divider fu fu4"></div>
+      <div class="fops-title-divider fu fu5"></div>
     </div>
   </section>
 
@@ -821,25 +884,40 @@ sticky_rank: 1
   </div>
 </div>
 
-<script>
+<script type="importmap">
+  {
+    "imports": {
+      "@api/config": "{{ site.baseurl }}/assets/js/api/config.js"
+    }
+  }
+</script>
+
+<script type="module">
+  import { pythonURI, fetchOptions } from '@api/config';
+  
   // ========== DROPDOWN ==========
-  function toggleDropdown(e) {
+  window.toggleDropdown = function(e) {
     e.stopPropagation();
     const dd = document.getElementById('eventsDropdown');
     if (dd) dd.classList.toggle('open');
-  }
+  };
+  
   document.addEventListener('click', function(e) {
     const dd = document.getElementById('eventsDropdown');
     if (dd && !dd.contains(e.target)) dd.classList.remove('open');
   });
 
   // ========== CHAT WIDGET ==========
-  const BACKEND_URL = "http://localhost:8587";
   let chatOpen = false;
   let messageHistory = [];
   let hasGreeted = false;
 
-  function toggleChat() {
+  // Use dynamic pythonURI from config
+  const BACKEND_URL = pythonURI;
+  
+  console.log('🔗 Backend URL configured:', BACKEND_URL);
+
+  window.toggleChat = function() {
     chatOpen = !chatOpen;
     const win = document.getElementById("chat-window");
     const btn = document.getElementById("chat-bubble");
@@ -847,7 +925,7 @@ sticky_rank: 1
       win.classList.remove("hidden");
       btn.textContent = "✕";
       if (!hasGreeted) {
-        setTimeout(() => addBotMessage("Hello! 👋 I'm the Friends of Poway Seniors assistant. I can help you find upcoming events, RSVP for lunch or BINGO, and answer questions about our programs. What can I help you with today?"), 300);
+        setTimeout(() => addBotMessage("👋 Hello! I'm the Friends of Poway Seniors assistant. I can help you find upcoming events, RSVP for lunch or BINGO, and answer questions about our programs. What can I help you with today?"), 300);
         hasGreeted = true;
       }
       setTimeout(() => document.getElementById("chat-input").focus(), 400);
@@ -855,42 +933,62 @@ sticky_rank: 1
       win.classList.add("hidden");
       btn.textContent = "💬";
     }
-  }
+  };
 
-async function sendMessage() {
-  const input = document.getElementById("chat-input");
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = "";
-  hideSuggestions();
-  addUserMessage(text);
-  messageHistory.push({ role: "user", content: text });
-  setInputEnabled(false);
-  const typingEl = showTyping();
-  try {
-    const res = await fetch(`${BACKEND_URL}/api/chat`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: messageHistory })
-    });
-    if (!res.ok) throw new Error(`Server error: ${res.status}`);
-    const data = await res.json();
-    removeTyping(typingEl);
-    addBotMessage(data.reply);
-    messageHistory.push({ role: "assistant", content: data.reply });
-  } catch (err) {
-    removeTyping(typingEl);
-    addBotMessage("Sorry, I'm having trouble connecting right now. Please call us at (858) 668-4689 for immediate help! 📞");
-  } finally {
-    setInputEnabled(true);
-    document.getElementById("chat-input").focus();
-  }
-}
+  window.sendMessage = async function() {
+    const input = document.getElementById("chat-input");
+    const text = input.value.trim();
+    if (!text) return;
+    input.value = "";
+    hideSuggestions();
+    addUserMessage(text);
+    messageHistory.push({ role: "user", content: text });
+    setInputEnabled(false);
+    const typingEl = showTyping();
+    
+    try {
+      console.log('📤 Sending message to:', `${BACKEND_URL}/api/chat`);
+      
+      const res = await fetch(`${BACKEND_URL}/api/chat`, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify({ messages: messageHistory })
+      });
+      
+      console.log('📥 Response status:', res.status);
+      
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+      }
+      
+      const data = await res.json();
+      console.log('📥 Response data:', data);
+      
+      removeTyping(typingEl);
+      addBotMessage(data.reply);
+      messageHistory.push({ role: "assistant", content: data.reply });
+    } catch (err) {
+      console.error('❌ Chat error:', err);
+      removeTyping(typingEl);
+      
+      if (err.message.includes('Failed to fetch')) {
+        addBotMessage("🔌 Cannot connect to the server at " + BACKEND_URL + ". Please make sure the backend is running with 'python app.py'");
+      } else {
+        addBotMessage("📞 I'm having trouble connecting right now. Please call us at (858) 668-4689 for immediate help! Our office hours are Monday-Friday 9 AM to 3 PM.");
+      }
+    } finally {
+      setInputEnabled(true);
+      document.getElementById("chat-input").focus();
+    }
+  };
 
-  function sendSuggestion(text) {
+  window.sendSuggestion = function(text) {
     document.getElementById("chat-input").value = text;
     sendMessage();
-  }
+  };
 
   function addUserMessage(text) {
     const el = document.createElement("div");
@@ -935,6 +1033,36 @@ async function sendMessage() {
     if (inp) inp.disabled = !enabled;
     if (btn) btn.disabled = !enabled;
   }
+
+  // Test connection on load - FIXED: No body for GET request
+  async function testConnection() {
+    console.log('🔍 Testing connection to:', `${BACKEND_URL}/api/chat/test`);
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/chat/test`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" }
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        console.log("✅ Chatbot API connected:", data);
+        
+        // Add a small indicator in chat bubble that API is ready
+        const bubble = document.getElementById("chat-bubble");
+        if (bubble) {
+          bubble.style.boxShadow = "0 0 0 2px #4caf50, 0 4px 20px rgba(46,82,56,0.45)";
+        }
+      } else {
+        console.error("❌ API returned status:", res.status);
+      }
+    } catch (err) {
+      console.error("❌ Cannot connect to backend:", err.message);
+      console.log("💡 Make sure to run: python app.py");
+    }
+  }
+  
+  // Wait a bit before testing connection
+  setTimeout(testConnection, 1000);
 </script>
 </body>
 </html>
