@@ -2,7 +2,7 @@
 
 A full redesign and rebuild of the [Friends of Poway Seniors (FOPs)](https://www.friendsofpowayseniors.org/) website, a 501(c)(3) nonprofit connecting volunteers with elderly community members in Poway, CA. Built by a student team as part of the Open Coding Society Computer Science program.
 
-**Team:** [Your Name], Vivian Zhang, Nitya Remias  
+**Team:** Virginia Zhu, Vivian Zhang, Nitya Remias  
 **Instructor:** John Mortensen  
 **Course:** AP Computer Science / Open Coding Society
 
